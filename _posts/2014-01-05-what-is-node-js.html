@@ -1,0 +1,74 @@
+---
+layout: post
+title: What is Node.js?
+date: 2014-01-05 22:58:31.000000000 -05:00
+type: post
+published: true
+status: publish
+categories:
+- Node.js
+- Open Source
+- Programming
+tags:
+- asynchronous
+- development
+- javascript
+- node
+- node.js
+- nodejs
+- Programming
+- Software
+- software-development
+- web
+meta:
+  _edit_last: '1'
+  _thumbnail_id: '235'
+  dsq_thread_id: '2094594002'
+author:
+  login: cacois
+  email: cacois@gmail.com
+  display_name: cacois
+  first_name: Constantine
+  last_name: Cois
+excerpt: Node.js - It's new, its exciting...but what, exactly, is it? Let's start
+  at the beginning...
+---
+<p>Node.js - It's new, its exciting...but what, exactly, is it?</p>
+<p>You may have heard of Node.js, but know only that it has something to do with “real-time” or “highly scalable” apps. You may have heard that Node.js is JavaScript for the server-side (and you may be wondering why anyone would want that!). Or maybe you know exactly what Node.js is, but aren’t sure when or why to use it. Just sit back, and I’ll explain everything.</p>
+<p>Let's start at the beginning...</p>
+<h2>The Web is Changing</h2>
+<p>The web used to be about consumption. Viewing web pages, watching videos, looking at pictures of cats. Of course, its still about pictures of cats…but the web has increasingly become about interaction. Users around the world want to interact with each other, and they want to do it in real time. Chat, gaming, constant social media updates, collaboration – each of these features requires real-time communication between users, clients, and servers across the web. What’s more, this real-time communication needs to happen at massive scale, supporting hundreds, thousands, even millions of users.</p>
+<p>So what do software developers need to make this happen? We need real-time communication between clients and servers – which means we need fast, persistent I/O. Anyone with web development experience knows that HTTP wasn’t built with this use case in mind. Large numbers of clients continuously polling a server simultaneously is incredibly slow and inefficient. To enable scalable real-time communication, servers need to be able to push data to clients, instead of HTTP’s heavy request/response model. We also need to make sure that these lightweight push communications work in a way that is scalable, maintainable, and usable from a software development standpoint.</p>
+<h2>Enter Node.js</h2>
+<p>Node.js is an event-driven, server-side JavaScript environment. Node runs JavaScript using the V8 engine developed by Google for use in their Chrome web browser. Leveraging V8 allows Node to provide a server-side runtime environment that compiles and executes JavaScript Really FastTM. The major speed increase is due to the fact that V8 compiles JavaScript into native machine code, instead of interpreting it or executing it as bytecode. Node.js and the V8 engine are both open source and cross-platform, running on Mac OSX, Windows, and Linux.</p>
+<p>But JavaScript? On the server-side? Why? Though JavaScript has traditionally been relegated to menial tasks in the web browser, it’s actually a fully-functional programming language, capable of anything that more traditional languages like C++. Ruby, or Java, are. Furthermore, JavaScript has the advantage of an excellent event model, ideal for asynchronous programming. JavaScript is also a ubiquitous language, well known by millions of developers. This lowers the learning curve of Node.js, since most devs won’t have to learn a new language to start building Node.js apps.</p>
+<p><a href="https://www.udemy.com/learn-nodejs-by-example/?couponCode=codehenge">For a limited time, subscribe to Learn Node.js by Example now and get 50% off!</a></p>
+<h2>Asynchronous Programming The Easy Way</h2>
+<p>In addition to lightning fast JavaScript execution, the real magic behind Node.js is something called the Event Loop. To scale to large volumes of clients, all I/O intensive operations in Node.js are performed asynchronously. The traditional threaded approach to asynchronous code is cumbersome and creates a non-trivial memory footprint for large numbers of clients (each client spawns a thread, each thread uses dedicated memory, the memory usage adds up). To avoid this inefficiency, as well as the known difficulty of programming threaded applications, Node.js maintains an event loop which manages all asynchronous operations for you. When a Node application needs to perform a blocking operation (I/O operations, heavy computation, etc) it sends an asynchronous task to the event loop, along with a callback function, and then continues to execute the rest of its program. The event loop keeps track of the asynchronous operation, and executes the given callback when it completes, returning it’s results to the application. This allows you to manage a large number of operations, such as client connections or computations, letting the event loop efficiently managing the thread pool and optimize task execution. Of course, leaving this responsibility to the event loop makes life particularly easy for Node.js developers, who can then focus on their application functionality.</p>
+<p><figure>
+    <img src='{{ site.baseurl }}assets/node-event-loop-e1388980560411.png' alt='The Node.js Event Loop Lifecycle' width='600' height='449'/>
+    <figcaption>The Node.js Event Loop Lifecycle</figcaption>
+</figure>
+<p>
+<p>This capability to simplify asynchronous programming is what makes Node.js such a powerful tool for developers. With Node.js, you can build complex applications that can scale to millions of client connections because the application handling client requests is passing off all of the time-intensive work of managing I/O and computation to the event loop.</p>
+<h2>The Node.js Community</h2>
+<p>In addition to it’s innate capabilities, Node.js has a thriving open source community which has produced many excellent modules to add additional capabilities to Node.js applications. One of the most famous is Socket.io, a module to manage persistent connections between client and server, enabling the server to push real-time updates to clients. Socket.io abstracts the technology used to maintain these connections away from the developer, automatically using the best technology available for a particular client (websockets if the browser supports it, JSONP or Ajax longpolling if not). This amazing technology allows you to program real-time applications simply, with very little code. For example, take this highly-scalable, real-time chat server:</p>
+
+{% highlight javascript %}
+server.listen(8080);
+
+var io = require('socket.io').listen(server);
+io.sockets.on('connection', function(socket){
+
+    // when message received, send it to all connected clients
+    socket.on('message', function(message){
+        console.log("Received message: " + message +
+                    " - from client " + socket.id);
+        io.sockets.emit('chat', socket.id, message);
+    });
+});
+{% endhighlight %}
+
+<p>Just 10 lines of code! The accompanying client-side code is just as simple. Imagine the possibilities!</p>
+<p>Get started writing Node.js applications now with Learn Node.js By Example. Through detailed screencasts, tutorials, and in-depth coding exercises, this highly-rated course will have you writing Node.js applications in no time.</p>
+<p><a href="https://www.udemy.com/learn-nodejs-by-example/?couponCode=codehenge">For a limited time, subscribe to Learn Node.js by Example now and get 50% off!</a></p>

@@ -1,0 +1,121 @@
+---
+layout: post
+title: Customizing Android ListView Item Layout
+date: 2011-05-22 20:14:22.000000000 -04:00
+type: post
+published: true
+status: publish
+categories:
+- Android
+- Programming
+tags:
+- Android
+- Java
+- Mobile
+- Programming
+meta:
+  _edit_last: '1'
+  dsq_thread_id: '311004361'
+  thumbnail: http://codehenge.net/blog/wp-content/uploads/2011/05/Screen-shot-2011-05-22-at-7.40.23-PM-181x300.png
+  featured_image: http://codehenge.net/blog/wp-content/uploads/2011/05/Screen-shot-2011-05-22-at-7.40.23-PM-181x300.png
+  suf_magazine_headline: 'on'
+  suf_magazine_excerpt: 'on'
+  suf_featured_image: http://codehenge.net/blog/wp-content/uploads/2011/05/Screen-shot-2011-05-22-at-7.40.23-PM-181x300.png
+  suf_thumbnail: http://codehenge.net/blog/wp-content/uploads/2011/05/Screen-shot-2011-05-22-at-7.40.23-PM-181x300.png
+author:
+  login: cacois
+  email: cacois@gmail.com
+  display_name: cacois
+  first_name: Constantine
+  last_name: Cois
+excerpt: Today I'm going to go step by step through an example of using a ListView,
+  and customizing the visual layout of items within.
+---
+<p>Today I'm going to go step by step through an example of using a ListView, and customizing the visual layout of items within. <a href="http://developer.android.com/reference/android/widget/ListView.html">ListView</a> is one of the primary UI components in the <a href="http://developer.android.com/sdk/index.html">Android SDK</a>. Its a great tool, providing you with scrolling lists and selection functionality right out of the box. With very little code, you can have a ListView displaying a list of objects for you. Just toss something like</p>
+<div>
+{% highlight xml %}
+<?xml version="1.0" encoding="utf-8"?>
+<linearlayout xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent">
+<listview android:id="@+id/ListViewId" android:layout_width="fill_parent" android:layout_height="wrap_content" />
+</linearlayout>
+{% endhighlight %}
+</div>
+<p>in your layout file (e.g. main.xml, for a simple application), and something like</p>
+<div>
+{% highlight java %}
+setContentView(R.layout.main);
+String[] items = {"red", "blue","green"};
+ListView listView = (ListView) findViewById(R.id.ListViewId);
+listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items));
+{% endhighlight %}
+</div>
+<p>on the java side in your onCreate() method. Easy, huh? Running this application will produce the following:</p>
+<p><figure><img src='{{ site.baseurl }}assets/Screen-shot-2011-05-21-at-5.57.31-PM1-180x300.png' alt='' width='180' height='300'/><figcaption></a> Now, the default ListView style in android is fine...until you need more than a snippet of text displayed for each item. It happens to us all. Luckily, when this time comes, the Android API is nicely prepared. Just a few tweaks, and you can have a ListView with items showing images, a couple lines of text, whatever your heart desires. And I'm going to show you how. Let's start with the simple example from above. Let's say we want to make our list display users of our app, instead of colors. For each user, we'd like to display username, email address, and an avatar. But how do we configure the ListView to display this content, and how do we set the layout? First, let's set the layout we'd like for our ListView items. To keep things orderly, create a new file in the layouts directory called listitem.xml. Put the following code in listitem.xml:</p></figcaption></figure><div>
+{% highlight xml %}
+<?xml version="1.0" encoding="utf-8"?>
+<linearlayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_height="wrap_content" android:gravity="left|center" android:layout_width="wrap_content" android:paddingbottom="5px" android:paddingtop="5px" android:paddingleft="5px">
+    <imageview android:id="@+id/avatar" android:layout_width="wrap_content" android:layout_height="fill_parent" android:layout_marginright="6dip" android:src="@drawable/icon" />
+<linearlayout android:orientation="vertical" android:layout_width="0dip" android:layout_weight="1" android:layout_height="fill_parent">
+        <TextView android:id="@+id/username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"/>
+    <textview android:id="@+id/email" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginleft="10px" android:textcolor="#0099CC" />
+    </linearlayout>
+</linearlayout>
+{% endhighlight %}
+</div>
+<p>This may look a bit complicated, but its really not. This xml will just define the layout of our items, so each selection in the ListView will have this layout within it. We've created a linear layout as our root layout (note: since we didn't specify, this layout will have a horizontal orientation for components inside of it). Inside of this base structure, we have two sub-components: an ImageView, which will display a single image, and a LinearLayout components with a vertical orientation. In this inner LinearLayout, we have two TextView components. This will display two text fields, one on top of the other, horizontally adjacent to the ImageView. Take a look at the ImageView definition. We have to tell the ImageView what image it will display. We tell it this with the android:src parameter. For simplicity, we are giving this a value of "@drawable/icon", which will tell it to use a file named icon.* (any image extension) found in one of the "res/drawable-*" directories. This icon file is included in any new android project created through eclipse, making it an easy target - you could just as easily point it at any image file you chose to put in these directories. In a real application to display user avatars, we would want to change this value in our java code to place a different avatar image in each ListView item. Now we just have to create a new Adapter class that will tell our ListView how to user this new item layout. To make things easier, I'll first create a small UserRecord class to allow us to pass our user item data around easily. Here it is:
+<div>
+{% highlight java %}
+public class UserRecord {
+    public String username;
+    public String email;
+    public UserRecord(String username, String email) {
+        this.username = username;
+        this.email = email;
+    }
+}
+{% endhighlight %}
+</div>
+<p>Now for the adapter, which is a bit more complex:</p>
+<div>
+{% highlight java %}
+public class UserItemAdapter extends ArrayAdapter<UserRecord> {
+    private ArrayList<UserRecord> users;
+    public UserItemAdapter(Context context, int textViewResourceId, ArrayList<UserRecord> users) {
+        super(context, textViewResourceId, users);
+    this.users = users;
+    }
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        View v = convertView;
+    if (v == null) {
+            LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            v = vi.inflate(R.layout.listitem, null);
+    }
+    UserRecord user = users.get(position);
+    if (user != null) {
+            TextView username = (TextView) v.findViewById(R.id.username);
+            TextView email = (TextView) v.findViewById(R.id.email);
+        if (username != null) {
+                username.setText(user.username);
+        }
+        if(email != null) {
+            email.setText("Email: " + user.email );
+        }
+    }
+    return v;
+    }
+}
+{% endhighlight %}
+</div>
+<p>So what are we doing here? Let's take a look. We are creating an adapter class which extends ArrayAdapter<userrecord>, meaning this adapter will take an array of UserRecord objects as input. In the constructor, we just call the superclass constructor to handle any background initialization issues that we don't want to worry about, and take the list of UserRecords given as an input parameter and save it to a local variable for safekeeping. The main thing we are doing here is overriding the getView() method with our own version - this will allow us to specify how to set the values of the UI components ourselves, since we are the ones who created this UI layout. When our app is displaying a ListView, it will call getView() for each item in the input array. getView() takes three parameters:</userrecord></p>
+<ul>
+<li>int position - the position of the item in the array we want to display</li>
+<li>a View - the view that will display the item in question</li>
+<li>a ViewGroup parent - the group our view belongs to. We won't need to deal with this for the task at hand. We do a little handling at the top in case the View object passed in is null (it shouldn't be in this example), and then we can set some values. Since we grabbed the list of UserRecord objects and stored it in a member variable in the UserItemAdapter constructor, we just get the objects at the specified position to have access to all of the values we want (just username and email, here, but obviously it could be much more data). Using a few findViewById() calls on our View, we get the UI components (TextView objects, in this case) that we want to use to displat our data, and set their text values using the specified UserRecord object. Return the View, and viola! Our ListView now looks like: </li>
+</ul>
+<p><figure><img src='{{ site.baseurl }}assets/Screen-shot-2011-05-22-at-7.40.23-PM-181x300.png' alt='' width='181' height='300'/><figcaption></a> Remember that we specified the image to be displayed in our layout XML file, so each item has the same image. If we wanted a different avatar image for each user, we would just store some more data in our UserRecord objects and set the source image for the ImageView object in the same manner as for the TextViews. Thanks for reading! Below are some links to download source files for today's example. Stay tuned for more future posts illustrating some more advanced customizations for ListViews, and other cool Android programming tricks. <br</figcaption></figure><p><strong>Get 50% off my Node.js course <a href="http://developer.android.com/sdk/index.html">here</a></strong></p>
+<p>If you liked this article, help me out by sharing a 50% discount to my Node.js course here: <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://www.udemy.com/learn-nodejs-by-example/?couponCode=codehenge" data-text="Sign up for Learn Node.js by Example now and get 50% off!" data-via="AaronCois" data-size="large" data-hashtags="nodejs">Tweet</a> Thanks!</p>
+<p>You should follow me on Twitter here: <a href="https://twitter.com/AaronCois" class="twitter-follow-button" data-show-count="false" data-show-screen-name="false">Follow @AaronCois</a></p>

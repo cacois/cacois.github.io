@@ -1,0 +1,101 @@
+---
+layout: post
+title: Using Socket.io With Express 3.x
+date: 2012-08-25 15:39:58.000000000 -04:00
+type: post
+published: true
+status: publish
+categories:
+- Node.js
+- Open Source
+- Programming
+tags:
+- javascript
+- node
+- node.js
+- nodejs
+- Programming
+- socket.io
+- socketio
+meta:
+  _edit_last: '1'
+  _aioseop_title: Using Socket.io With Express 3.x
+  sponge: '1'
+  suf_meta_keywords: node, nodejs, node.js, socket.io, socketio, javascript, programming
+  dsq_thread_id: '818362897'
+  _aioseop_description: Excited about version 3.x of Express, the Node.js web framework?
+    It has some great <a href="https://github.com/visionmedia/express/wiki/New-features-in-3.x"
+    title="Express 3.x Features">new features</a>, and is certainly worth migrating
+    to. Many of my apps make use of <a href="http://socket.io">Socket.io</a>, one
+    of my favorite Node modules, and in this case, and as of now (Socket.io v9.1)
+    the migration isn't as smooth as it could be. Until socket.io catches up with
+    the changes to Express, here's how you can use it with Express 3.x.
+  _aioseop_keywords: node, nodejs, node.js, socket.io, socketio, javascript, programming
+  suf_meta_description: Excited about version 3.x of Express, the Node.js web framework?
+    It has some great <a href="https://github.com/visionmedia/express/wiki/New-features-in-3.x"
+    title="Express 3.x Features">new features</a>, and is certainly worth migrating
+    to. Many of my apps make use of <a href="http://socket.io">Socket.io</a>, one
+    of my favorite Node modules, and in this case, and as of now (Socket.io v9.1)
+    the migration isn't as smooth as it could be. Until socket.io catches up with
+    the changes to Express, here's how you can use it with Express 3.x.
+  suf_featured_image: http://codehenge.net/blog/wp-content/uploads/2012/08/socketio9-e1345923900483.png
+author:
+  login: cacois
+  email: cacois@gmail.com
+  display_name: cacois
+  first_name: Constantine
+  last_name: Cois
+excerpt: Excited about version 3.x of Express, the Node.js web framework? It has some
+  great new features, and is certainly worth migrating to. Many of my apps make use
+  of Socket.io, one of my favorite Node modules, and in this case, and as of now (Socket.io
+  v9.1) the migration isn't as smooth as it could be. Until socket.io catches up with
+  the changes to Express, here's how you can use it with Express 3.x.
+---
+<p><figure><img src='{{ site.baseurl }}assets/socketio9-e1345921380351.png' alt='' width='300' height='102'/><figcaption></a>Excited about version 3.x of Express, the Node.js web framework? It has some great <a href="https://github.com/visionmedia/express/wiki/New-features-in-3.x" title="Express 3.x Features">new features</a>, and is certainly worth migrating to. Many of my apps make use of <a href="http://socket.io">Socket.io</a>, one of my favorite Node modules, and in this case, and as of now (Socket.io v9.1) the migration isn't as smooth as it could be. Until socket.io catches up with the changes to Express, here's how you can use it with Express 3.x.<br</figcaption></figure>Back in Express 2.x, you would create an express object:</p>
+{% highlight javascript %}
+var express = require('express');
+var app = express.createServer();
+{% endhighlight %}
+<p>and then configure your socket.io object to listen along with the express app:</p>
+{% highlight javascript %}
+var io = require('socket.io').listen(app);
+{% endhighlight %}
+<p>then tell the express app to listen on a port:</p>
+{% highlight javascript %}
+app.listen(8080);
+{% endhighlight %}
+<p>One of the first changes in Express 3.x is that express.createServer() has been deprecated. If you try to use it, you will receive the following message when you start your app:</p>
+<blockquote>
+<p>Warning: express.createServer() is deprecated, express applications no longer inherit from http.Server, please use:<br />
+   var express = require("express");</p>
+<p>var app = express();</p>
+</blockquote>
+<p>Ok, no big deal, let's just do exactly what it says:</p>
+{% highlight javascript %}
+var express = require('express');
+var app = express();
+{% endhighlight %}
+<p><strong>Want to master Node.js?</strong> Try my highly-rated online course <a href="http://www.udemy.com/learn-nodejs-by-example/" title="Learn Node.js by Example">Learn Node.js by Example</a>. <a href="http://www.udemy.com/learn-nodejs-by-example/?couponCode=codehenge">Click here</a> to get 50% off on screencasts, interactive projects, and more!</p>
+<p>However, you now have a very different object stored as 'app' then you did in Express 2.x. Before, app was derived from the HTTP server object type, which is what socket.io expects to be passed in its listen() method:</p>
+{% highlight javascript %}
+var io = require('socket.io').listen(app);
+{% endhighlight %}
+<p>If you pass this new app object in, while no error will be thrown, the socket.io connections will not succeed. On launching your app, you will even get a helpful message:</p>
+<blockquote>
+<p>Socket.IO's &#96;listen()&#96; method expects an &#96;http.Server&#96; instance as its first parameter. Are you migrating from Express 2.x to 3.x?<br />
+  Which is a pretty good clue that you need to make some minor adjustments. Here's how to fix things.</p>
+</blockquote>
+<p>First, create an HTTP server object from your new Express 3.x app object:</p>
+{% highlight javascript %}
+server = http.createServer(app);
+{% endhighlight %}
+<p>Now, pass this server object to socket.io instead:</p>
+{% highlight javascript %}
+var io = require('socket.io').listen(server);
+{% endhighlight %}
+<p>Finally, you will need to invoke the server object to start listening on a port, rather than the app object, since the server object is what socket.io is linked with. This will work fine, but is against the standard Express 3.x convention:</p>
+{% highlight javascript %}
+server.listen(8080);
+{% endhighlight %}
+<p>Keep an eye out, as you this is a change you will have to make for the time being, especially when adding socket.io into existing Express 3.x apps.</p>
+<p>Happy Noding!</p>

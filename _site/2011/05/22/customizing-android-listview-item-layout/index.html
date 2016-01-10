@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <title>Codehenge - Who built it, and why? A blog about software, technology, and more</title>
+    <meta name="description" content="Codehenge" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+    <!-- Customisation  -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <link rel="stylesheet" href="/pygments.css">
+
+</head>
+<body class="post-template">
+
+    <header class="main-header post-head no-cover">
+    <nav class="main-nav  clearfix">
+        <a class="back-button icon-arrow-left" href="/ ">Home</a>
+        <a class="subscribe-button icon-feed" href="/rss.xml">Subscribe</a>
+    </nav>
+</header>
+
+<main class="content" role="main">
+
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Customizing Android ListView Item Layout</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2011-05-22">22 May 2011</time>
+                
+                    on android and programming
+                
+            </section>
+        </header>
+
+<!--         <header class="post-header">
+            <a id="blog-logo" href="blog url">
+                
+                    <img src="true" alt="Codehenge" />
+                
+            </a>
+        </header> -->
+
+        <!-- <span class="post-meta">
+            <time datetime="2011-05-22">22 May 2011</time>
+            
+                on android and programming
+            
+        </span> -->
+
+        <!-- <h1 class="post-title">Customizing Android ListView Item Layout</h1> -->
+
+        <section class="post-content">
+            <p>Today I'm going to go step by step through an example of using a ListView, and customizing the visual layout of items within. <a href="http://developer.android.com/reference/android/widget/ListView.html">ListView</a> is one of the primary UI components in the <a href="http://developer.android.com/sdk/index.html">Android SDK</a>. Its a great tool, providing you with scrolling lists and selection functionality right out of the box. With very little code, you can have a ListView displaying a list of objects for you. Just toss something like</p>
+<div>
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
+<span class="nt">&lt;linearlayout</span> <span class="na">xmlns:android=</span><span class="s">&quot;http://schemas.android.com/apk/res/android&quot;</span> <span class="na">android:orientation=</span><span class="s">&quot;vertical&quot;</span> <span class="na">android:layout_width=</span><span class="s">&quot;fill_parent&quot;</span> <span class="na">android:layout_height=</span><span class="s">&quot;fill_parent&quot;</span><span class="nt">&gt;</span>
+<span class="nt">&lt;listview</span> <span class="na">android:id=</span><span class="s">&quot;@+id/ListViewId&quot;</span> <span class="na">android:layout_width=</span><span class="s">&quot;fill_parent&quot;</span> <span class="na">android:layout_height=</span><span class="s">&quot;wrap_content&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/linearlayout&gt;</span></code></pre></div>
+</div>
+<p>in your layout file (e.g. main.xml, for a simple application), and something like</p>
+<div>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">setContentView</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">main</span><span class="o">);</span>
+<span class="n">String</span><span class="o">[]</span> <span class="n">items</span> <span class="o">=</span> <span class="o">{</span><span class="s">&quot;red&quot;</span><span class="o">,</span> <span class="s">&quot;blue&quot;</span><span class="o">,</span><span class="s">&quot;green&quot;</span><span class="o">};</span>
+<span class="n">ListView</span> <span class="n">listView</span> <span class="o">=</span> <span class="o">(</span><span class="n">ListView</span><span class="o">)</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">ListViewId</span><span class="o">);</span>
+<span class="n">listView</span><span class="o">.</span><span class="na">setAdapter</span><span class="o">(</span><span class="k">new</span> <span class="n">ArrayAdapter</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;(</span><span class="k">this</span><span class="o">,</span> <span class="n">android</span><span class="o">.</span><span class="na">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">simple_list_item_1</span><span class="o">,</span> <span class="n">items</span><span class="o">));</span></code></pre></div>
+</div>
+<p>on the java side in your onCreate() method. Easy, huh? Running this application will produce the following:</p>
+<p><figure><img src='/assets/Screen-shot-2011-05-21-at-5.57.31-PM1-180x300.png' alt='' width='180' height='300'/><figcaption></a> Now, the default ListView style in android is fine...until you need more than a snippet of text displayed for each item. It happens to us all. Luckily, when this time comes, the Android API is nicely prepared. Just a few tweaks, and you can have a ListView with items showing images, a couple lines of text, whatever your heart desires. And I'm going to show you how. Let's start with the simple example from above. Let's say we want to make our list display users of our app, instead of colors. For each user, we'd like to display username, email address, and an avatar. But how do we configure the ListView to display this content, and how do we set the layout? First, let's set the layout we'd like for our ListView items. To keep things orderly, create a new file in the layouts directory called listitem.xml. Put the following code in listitem.xml:</p></figcaption></figure><div>
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
+<span class="nt">&lt;linearlayout</span> <span class="na">xmlns:android=</span><span class="s">&quot;http://schemas.android.com/apk/res/android&quot;</span> <span class="na">android:layout_height=</span><span class="s">&quot;wrap_content&quot;</span> <span class="na">android:gravity=</span><span class="s">&quot;left|center&quot;</span> <span class="na">android:layout_width=</span><span class="s">&quot;wrap_content&quot;</span> <span class="na">android:paddingbottom=</span><span class="s">&quot;5px&quot;</span> <span class="na">android:paddingtop=</span><span class="s">&quot;5px&quot;</span> <span class="na">android:paddingleft=</span><span class="s">&quot;5px&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;imageview</span> <span class="na">android:id=</span><span class="s">&quot;@+id/avatar&quot;</span> <span class="na">android:layout_width=</span><span class="s">&quot;wrap_content&quot;</span> <span class="na">android:layout_height=</span><span class="s">&quot;fill_parent&quot;</span> <span class="na">android:layout_marginright=</span><span class="s">&quot;6dip&quot;</span> <span class="na">android:src=</span><span class="s">&quot;@drawable/icon&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;linearlayout</span> <span class="na">android:orientation=</span><span class="s">&quot;vertical&quot;</span> <span class="na">android:layout_width=</span><span class="s">&quot;0dip&quot;</span> <span class="na">android:layout_weight=</span><span class="s">&quot;1&quot;</span> <span class="na">android:layout_height=</span><span class="s">&quot;fill_parent&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;TextView</span> <span class="na">android:id=</span><span class="s">&quot;@+id/username&quot;</span>
+        <span class="na">android:layout_width=</span><span class="s">&quot;wrap_content&quot;</span>
+        <span class="na">android:layout_height=</span><span class="s">&quot;wrap_content&quot;</span>
+        <span class="na">android:gravity=</span><span class="s">&quot;center&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;textview</span> <span class="na">android:id=</span><span class="s">&quot;@+id/email&quot;</span> <span class="na">android:layout_width=</span><span class="s">&quot;wrap_content&quot;</span> <span class="na">android:layout_height=</span><span class="s">&quot;wrap_content&quot;</span> <span class="na">android:layout_marginleft=</span><span class="s">&quot;10px&quot;</span> <span class="na">android:textcolor=</span><span class="s">&quot;#0099CC&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/linearlayout&gt;</span>
+<span class="nt">&lt;/linearlayout&gt;</span></code></pre></div>
+</div>
+<p>This may look a bit complicated, but its really not. This xml will just define the layout of our items, so each selection in the ListView will have this layout within it. We've created a linear layout as our root layout (note: since we didn't specify, this layout will have a horizontal orientation for components inside of it). Inside of this base structure, we have two sub-components: an ImageView, which will display a single image, and a LinearLayout components with a vertical orientation. In this inner LinearLayout, we have two TextView components. This will display two text fields, one on top of the other, horizontally adjacent to the ImageView. Take a look at the ImageView definition. We have to tell the ImageView what image it will display. We tell it this with the android:src parameter. For simplicity, we are giving this a value of "@drawable/icon", which will tell it to use a file named icon.* (any image extension) found in one of the "res/drawable-*" directories. This icon file is included in any new android project created through eclipse, making it an easy target - you could just as easily point it at any image file you chose to put in these directories. In a real application to display user avatars, we would want to change this value in our java code to place a different avatar image in each ListView item. Now we just have to create a new Adapter class that will tell our ListView how to user this new item layout. To make things easier, I'll first create a small UserRecord class to allow us to pass our user item data around easily. Here it is:
+<div>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserRecord</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">username</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">email</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nf">UserRecord</span><span class="o">(</span><span class="n">String</span> <span class="n">username</span><span class="o">,</span> <span class="n">String</span> <span class="n">email</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">username</span> <span class="o">=</span> <span class="n">username</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">email</span> <span class="o">=</span> <span class="n">email</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></div>
+</div>
+<p>Now for the adapter, which is a bit more complex:</p>
+<div>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserItemAdapter</span> <span class="kd">extends</span> <span class="n">ArrayAdapter</span><span class="o">&lt;</span><span class="n">UserRecord</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">UserRecord</span><span class="o">&gt;</span> <span class="n">users</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nf">UserItemAdapter</span><span class="o">(</span><span class="n">Context</span> <span class="n">context</span><span class="o">,</span> <span class="kt">int</span> <span class="n">textViewResourceId</span><span class="o">,</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">UserRecord</span><span class="o">&gt;</span> <span class="n">users</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">(</span><span class="n">context</span><span class="o">,</span> <span class="n">textViewResourceId</span><span class="o">,</span> <span class="n">users</span><span class="o">);</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">users</span> <span class="o">=</span> <span class="n">users</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">View</span> <span class="nf">getView</span><span class="o">(</span><span class="kt">int</span> <span class="n">position</span><span class="o">,</span> <span class="n">View</span> <span class="n">convertView</span><span class="o">,</span> <span class="n">ViewGroup</span> <span class="n">parent</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">View</span> <span class="n">v</span> <span class="o">=</span> <span class="n">convertView</span><span class="o">;</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">v</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">LayoutInflater</span> <span class="n">vi</span> <span class="o">=</span> <span class="o">(</span><span class="n">LayoutInflater</span><span class="o">)</span><span class="n">getSystemService</span><span class="o">(</span><span class="n">Context</span><span class="o">.</span><span class="na">LAYOUT_INFLATER_SERVICE</span><span class="o">);</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">vi</span><span class="o">.</span><span class="na">inflate</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">listitem</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="n">UserRecord</span> <span class="n">user</span> <span class="o">=</span> <span class="n">users</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">position</span><span class="o">);</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">user</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">TextView</span> <span class="n">username</span> <span class="o">=</span> <span class="o">(</span><span class="n">TextView</span><span class="o">)</span> <span class="n">v</span><span class="o">.</span><span class="na">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">username</span><span class="o">);</span>
+            <span class="n">TextView</span> <span class="n">email</span> <span class="o">=</span> <span class="o">(</span><span class="n">TextView</span><span class="o">)</span> <span class="n">v</span><span class="o">.</span><span class="na">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">email</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">username</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">username</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">username</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">email</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">email</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">&quot;Email: &quot;</span> <span class="o">+</span> <span class="n">user</span><span class="o">.</span><span class="na">email</span> <span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="n">v</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></div>
+</div>
+<p>So what are we doing here? Let's take a look. We are creating an adapter class which extends ArrayAdapter<userrecord>, meaning this adapter will take an array of UserRecord objects as input. In the constructor, we just call the superclass constructor to handle any background initialization issues that we don't want to worry about, and take the list of UserRecords given as an input parameter and save it to a local variable for safekeeping. The main thing we are doing here is overriding the getView() method with our own version - this will allow us to specify how to set the values of the UI components ourselves, since we are the ones who created this UI layout. When our app is displaying a ListView, it will call getView() for each item in the input array. getView() takes three parameters:</userrecord></p>
+<ul>
+<li>int position - the position of the item in the array we want to display</li>
+<li>a View - the view that will display the item in question</li>
+<li>a ViewGroup parent - the group our view belongs to. We won't need to deal with this for the task at hand. We do a little handling at the top in case the View object passed in is null (it shouldn't be in this example), and then we can set some values. Since we grabbed the list of UserRecord objects and stored it in a member variable in the UserItemAdapter constructor, we just get the objects at the specified position to have access to all of the values we want (just username and email, here, but obviously it could be much more data). Using a few findViewById() calls on our View, we get the UI components (TextView objects, in this case) that we want to use to displat our data, and set their text values using the specified UserRecord object. Return the View, and viola! Our ListView now looks like: </li>
+</ul>
+<p><figure><img src='/assets/Screen-shot-2011-05-22-at-7.40.23-PM-181x300.png' alt='' width='181' height='300'/><figcaption></a> Remember that we specified the image to be displayed in our layout XML file, so each item has the same image. If we wanted a different avatar image for each user, we would just store some more data in our UserRecord objects and set the source image for the ImageView object in the same manner as for the TextViews. Thanks for reading! Below are some links to download source files for today's example. Stay tuned for more future posts illustrating some more advanced customizations for ListViews, and other cool Android programming tricks. <br</figcaption></figure><p><strong>Get 50% off my Node.js course <a href="http://developer.android.com/sdk/index.html">here</a></strong></p>
+<p>If you liked this article, help me out by sharing a 50% discount to my Node.js course here: <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://www.udemy.com/learn-nodejs-by-example/?couponCode=codehenge" data-text="Sign up for Learn Node.js by Example now and get 50% off!" data-via="AaronCois" data-size="large" data-hashtags="nodejs">Tweet</a> Thanks!</p>
+<p>You should follow me on Twitter here: <a href="https://twitter.com/AaronCois" class="twitter-follow-button" data-show-count="false" data-show-screen-name="false">Follow @AaronCois</a></p>
+
+        </section>
+
+        
+
+        <footer class="post-footer">
+            <!-- If we want to display author's name and bio -->
+            
+                <figure class="author-image">
+                    <a class="img" href="/ " style="background-image: url(/assets/images/profile2.jpg)">
+                    <span class="hidden">Constantine Aaron Cois's Picture</span></a>
+                </figure>
+                <section class="author">
+                    <!-- Author Name -->
+                    <h4> Constantine Aaron Cois </h4>
+                    <!-- Author Bio -->
+                    <p>
+                         I code, I teach, I write. Want to know more <a href='/about.html'> about me? </a> 
+                    </p>
+                </section>
+            
+
+            <!-- Share links section -->
+            <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?text=Customizing Android ListView Item Layout&amp;url=http://www.codehenge.net/2011/05/22/customizing-android-listview-item-layout/"
+        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://www.codehenge.net/2011/05/22/customizing-android-listview-item-layout/"
+        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://www.codehenge.net/2011/05/22/customizing-android-listview-item-layout/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+
+            <!-- Disqus comments -->
+            
+
+        </footer>
+
+    </article>
+
+</main>
+
+    <footer class="site-footer clearfix">
+      <section class="copyright">
+        <a href="/">Codehenge</a> &copy;
+               &bull; All rights reserved.
+      </section>
+      <section class="poweredby">Made with Jekyll using
+        <a href="http://github.com/rosario/kasper">Kasper theme</a>
+      </section>
+    </footer>
+
+    <script type="text/javascript" src="/assets/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="/assets/js/index.js"></script>
+
+    <!-- Google Analytics Tracking code -->
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-XXXXXXXX-X']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>
+</body>
+</html>

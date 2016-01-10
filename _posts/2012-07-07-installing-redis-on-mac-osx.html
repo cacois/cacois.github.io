@@ -1,0 +1,94 @@
+---
+layout: post
+title: Installing Redis on Mac OSX
+date: 2012-07-07 23:12:32.000000000 -04:00
+type: post
+published: true
+status: publish
+categories:
+- Open Source
+- Programming
+tags:
+- nosql
+- Open Source
+- Programming
+- redis
+- Software
+- software-development
+meta:
+  _networkpub_meta_content: '0'
+  _networkpub_meta_publish: '1'
+  _networkpub_meta_published: new
+  _edit_last: '1'
+  sponge: '1'
+  suf_magazine_headline: 'on'
+  suf_featured_image: http://codehenge.net/blog/wp-content/uploads/2012/07/redis-300px.png
+  dsq_thread_id: '755757593'
+  _aioseop_description: 'In this post, I''ll show you how to install Redis, a popular
+    NoSQL database, on your OSX machine. '
+  _aioseop_title: Installing Redis on Mac OSX
+  suf_meta_description: 'In this post, I''ll show you how to install Redis, a popular
+    NoSQL database, on your OSX machine. For those unaware, Redis is described on
+    its project site as: "an open source, advanced key-value store. It is often referred
+    to as a data structure server since keys can contain strings, hashes, lists, sets
+    and sorted sets."'
+  suf_meta_keywords: redis, nosql, software, programming, opensource, open source
+  _aioseop_keywords: redis, nosql, software, programming, opensource, open source
+  suf_thumbnail: http://codehenge.net/blog/wp-content/uploads/2012/07/redis-300px.png
+author:
+  login: cacois
+  email: cacois@gmail.com
+  display_name: cacois
+  first_name: Constantine
+  last_name: Cois
+excerpt: 'In this post, I''ll show you how to install Redis, a popular NoSQL database,
+  on your OSX machine. For those unaware, Redis is described on its project site as:
+  "an open source, advanced key-value store. It is often referred to as a data structure
+  server since keys can contain strings, hashes, lists, sets and sorted sets."'
+---
+<p><figure><img src='{{ site.baseurl }}assets/redis-300px.png' alt='Redis' width='300' height='115'/><figcaption></a></p></figcaption></figure><p></p>
+<p></p>
+<p>In this post, I'll show you how to install <a href="http://redis.io/" title="Redis.io">Redis</a>, a popular NoSQL database, on your OSX machine. For those unaware, Redis is described on its project site as:</p>
+<blockquote><p>an open source, advanced key-value store. It is often referred to as a data structure server since keys can contain strings, hashes, lists, sets and sorted sets.</p></blockquote>
+<p>The great thing about Redis is that it uses an in-memory data set, making it incredibly fast at I/O. This can be handy in a lot of situations, but I'll go into more detail on its uses in another post.</p>
+<p>To install Redis on your machine, we first have to get the latest source. This is easily done using wget:</p>
+{% highlight bash %}
+$ wget http://redis.googlecode.com/files/redis-2.4.15.tar.gz<br />
+{% endhighlight %}
+<p>I put this file in /usr/local/src, which is a directory I have created to hold source distributions. I'm getting version 2.4.15 here, because its the latest stable version at the time of writing. You should change the above wget command to get to most recent version. </p>
+<p>Unpack the tarball you downloaded:</p>
+{% highlight bash %}
+$ tar xzf redis-2.4.15.tar.gz<br />
+{% endhighlight %}
+<p>Then go into the newly created directory and build the source:</p>
+{% highlight bash %}
+$ cd redis-2.4.15<br />
+$ make<br />
+{% endhighlight %}
+<p>You shouldn't need sudo for this, if you put the code in a directory you have permissions on. But, if you get an error, try sudo.</p>
+<p>Now install the binaries:</p>
+{% highlight bash %}
+$ make install<br />
+{% endhighlight %}
+<p>This will put the redis executables in /usr/local/bin, which is also in the system path, so you can launch redis from a terminal without an absolute path. Now redis is installed, and we can briefly test it out. Issue the following command to start the redis server:</p>
+{% highlight bash %}
+$ redis-server<br />
+{% endhighlight %}
+<p>You will see some output similar to:</p>
+{% highlight bash %}
+[13193] 07 Jul 21:34:25 # Warning: no config file specified, using the default config. In<br />
+order to specify a config file use 'redis-server /path/to/redis.conf'<br />
+[13193] 07 Jul 21:34:25 * Server started, Redis version 2.4.15<br />
+[13193] 07 Jul 21:34:25 * The server is now ready to accept connections on port 6379<br />
+[13193] 07 Jul 21:34:25 - 0 clients connected (0 slaves), 922304 bytes in use<br />
+{% endhighlight %}
+<p>Good, the server is running. You see in the above messages that redis is operating in a default configuration. This is usually find for development, but for production needs, you will want to specify a config file. You can do this by including the path to the config file as an input parameter, such as:</p>
+{% highlight bash %}
+$ redis-server /path/to/redis.conf<br />
+{% endhighlight %}
+<p>The suggested standard placement of the config file is in a directory called ~/.redis. To create this and put a copy of the default redis config file there, you can use:</p>
+{% highlight bash %}
+$ mkdir ~/.redis<br />
+$ cp /usr/local/src/redis-2.4.15/redis.conf<br />
+{% endhighlight %}
+<p>Congratulations, you are now ready to start using Redis. Have fun!</p>

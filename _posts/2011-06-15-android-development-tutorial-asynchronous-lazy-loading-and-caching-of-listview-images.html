@@ -1,0 +1,449 @@
+---
+layout: post
+title: 'Android Development Tutorial: Asynchronous Lazy Loading and Caching of ListView
+  Images'
+date: 2011-06-15 22:19:58.000000000 -04:00
+type: post
+published: true
+status: publish
+categories:
+- Android
+- Open Source
+- Programming
+tags:
+- Android
+- github
+- listview
+- Programming
+- tutorial
+- twitter
+meta:
+  _edit_last: '1'
+  _aioseop_keywords: android, listview, bitmap, image, bitmapfactory, twitter, lazy
+    loading, asynchronous, viewholder, optimization, ui, cache, caching
+  _aioseop_description: 'Today I''ll rebuild the Twitter example to add asynchronous
+    lazy loading and caching of images (Twitter profile images, in our case). Through
+    this example, I''ll demonstrate asynchronous operations in Android, using local
+    storage for caching data, ViewHolders, and a few other advanced techniques for
+    optimizing app performance. '
+  _aioseop_title: 'Android Development Tutorial: Asynchronous Lazy Loading and Caching
+    of ListView Images'
+  suf_magazine_headline: 'on'
+  suf_magazine_excerpt: 'on'
+  meta_description: 'Today I''ll rebuild the Twitter example to add asynchronous lazy
+    loading and caching of images (Twitter profile images, in our case). Through this
+    example, I''ll demonstrate asynchronous operations in Android, using local storage
+    for caching data, ViewHolders, and a few other advanced techniques for optimizing
+    app performance. '
+  meta_keywords: 'android, listview, bitmap, image, bitmapfactory, twitter, lazy loading,
+    asynchronous, viewholder, optimization, ui, '
+  _thumbnail_id: '86'
+  suf_thumbnail: http://codehenge.net/blog/wp-content/uploads/2011/06/android-logo_lazy.jpg
+  thumbnail: http://codehenge.net/blog/wp-content/uploads/2011/06/android-logo_lazy.jpg
+  featured_image: http://codehenge.net/blog/wp-content/uploads/2011/06/android-logo_lazy.jpg
+  dsq_thread_id: '333521559'
+  gr_overridden: '0'
+  sponge: '1'
+  _networkpub_meta_published: new
+  _networkpub_meta_publish: '1'
+  _networkpub_meta_content: '0'
+  suf_featured_image: http://codehenge.net/blog/wp-content/uploads/2011/06/android-logo_lazy.jpg
+  suf_meta_description: 'Today I''ll rebuild the Twitter example to add asynchronous
+    lazy loading and caching of images (Twitter profile images, in our case). Through
+    this example, I''ll demonstrate asynchronous operations in Android, using local
+    storage for caching data, ViewHolders, and a few other advanced techniques for
+    optimizing app performance. '
+  suf_meta_keywords: 'android, listview, bitmap, image, bitmapfactory, twitter, lazy
+    loading, asynchronous, viewholder, optimization, ui, '
+author:
+  login: cacois
+  email: cacois@gmail.com
+  display_name: cacois
+  first_name: Constantine
+  last_name: Cois
+excerpt: "In my last post I created a simple Android Twitter feed reader based on
+  the Twitter Search API, demonstrating an application of custom ListView layouts
+  and integration of internet data sources. \r\n\r\nToday I'll refactor the Twitter
+  example to add asynchronous lazy loading and caching of images (Twitter profile
+  images, in our case). "
+---
+<p>In my</p>
+<p><a href="http://codehenge.net/blog/2011/05/android-programming-tutorial-a-simple-twitter-feed-reader/">last post</a> I created a simple Android Twitter feed reader based on the <a href="http://search.twitter.com/api/">Twitter Search API</a>, demonstrating an application of custom ListView layouts and integration of internet data sources. Any readers who tried out the code would immediately notice that, though functional, the implementation produced significant lag in the UI when scrolling through the tweets. This is because the getView() method of a ListView adapter can be called one or more times each time a ListView item comes into view - we are given no guarantees on when or how this method will be called. Therefore, downloading the Twitter profile images within getView() was extremely inefficient, as each image was being downloaded by the UI thread as the ListView item came into view, and was usually downloaded repeatedly after that. Today I'll refactor the Twitter example to add asynchronous lazy loading and caching of images (Twitter profile images, in our case). Some of the code included has been based on the excellent</p>
+<p><a href="https://github.com/thest1/LazyList">demonstration</a> provided by Github user <a href="https://github.com/thest1">thest1</a>. Through this example, I'll demonstrate asynchronous operations in Android, using local storage for caching data, ViewHolders, and a few other advanced techniques for optimizing app performance. First, let's recall where we left off last time. We were using a custom ArrayAdapter to set the view components of each item in our custom ListView:</p>
+<div>
+{% highlight java %}
+public class TweetItemAdapter extends ArrayAdapter<tweet> {
+  private ArrayList<tweet> tweets;
+  public TweetItemAdapter(Context context, int textViewResourceId,
+                                          ArrayList<tweet> tweets) {
+    super(context, textViewResourceId, tweets);
+    this.tweets = tweets;
+  }
+  @Override
+  public View getView(int position, View convertView, ViewGroup parent) {
+    View v = convertView;
+    if (v == null) {
+      LayoutInflater vi =
+         (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+      v = vi.inflate(R.layout.listitem, null);
+    }
+    Tweet tweet = tweets.get(position);
+    if (tweet != null) {
+      TextView username = (TextView) v.findViewById(R.id.username);
+      TextView message = (TextView) v.findViewById(R.id.message);
+      ImageView image = (ImageView) v.findViewById(R.id.avatar);
+      if (username != null) {
+        username.setText(tweet.username);
+      }
+      if(message != null) {
+        message.setText(tweet.message);
+      }
+      if(image != null) {
+        image.setImageBitmap(getBitmap(tweet.image_url));
+      }
+    }
+    return v;
+  }
+}
+{% endhighlight %}
+</div>
+<p>Each time getView() was called, a method getBitmap(url) was initiated, which reached out to the web to pull down the image required:</p>
+<div>
+{% highlight java %}
+public Bitmap getBitmap(String bitmapUrl) {
+  try {
+    URL url = new URL(bitmapUrl);
+    return BitmapFactory.decodeStream(url.openConnection().getInputStream());
+  }
+  catch(Exception ex) {return null;}
+}
+{% endhighlight %}</div>
+<p>Since all of this is happening on the UI thread, massive UI lag resulted, which would create a poor user experience for a production app. The root problems are:</p>
+<ol>
+<li>Images are being downloaded from the UI thread</li>
+<li>Images are being downloaded many, many more times than they need to be, since getView() is called as often as Android feels like calling it</li>
+</ol>
+<p>So, what can we do?</p>
+<p>First, Problem #1. The obvious solution is to download the image and set it to the ImageView in a separate thread. Easy, right? This is the first thing every developer tries when they encounter this problem. Unfortunately, its not so simple. The Android UI is absolutely, completely,</p>
+<p><a href="http://developer.android.com/resources/articles/painless-threading.html">not thread-safe</a>. So, calling the ImageView in a worker thread could lead to your <a href="http://www.kongregate.com/games/mike_id/doom-1">DOOM</a>. Ok, ok...it could lead to weird bugs that are tough to track down. Either way, undesirable. Additionally, if we have a lot of tweets in our ListView, we may end up downloading a large number of profile images that our user never scrolls down to see, wasting network data usage and battery power, two things we want to minimize use of in mobile apps. The best solution to this issue is to lazy load the images in a separate thread, while placing them in our ImageViews with the main UI thread. A good solution is to cache the images somewhere the UI thread can access them, and let the UI thread know when they are available for display. This approach has the added benefit of addressing Problem #2, as well as our inefficient network/battery use, by downloading each image once and storing it in a local cache.</p>
+<p>To start, we'll be adding a class to manage both our local image cache and a download queue for the images. Let's call this class ImageManager, and get it started:</p>
+<div>
+{% highlight java %}
+public class ImageManager {
+  private HashMap<String, Bitmap> imageMap = new HashMap<String, Bitmap>();
+  private File cacheDir;
+  public ImageManager(Context context) {
+    // Make background thread low priority, to avoid affecting UI performance
+    imageLoaderThread.setPriority(Thread.NORM_PRIORITY-1);
+    // Find the dir to save cached images
+    String sdState = android.os.Environment.getExternalStorageState();
+    if (sdState.equals(android.os.Environment.MEDIA_MOUNTED)) {
+      File sdDir = android.os.Environment.getExternalStorageDirectory();
+      cacheDir = new File(sdDir,"data/codehenge");
+    }
+    else
+      cacheDir = context.getCacheDir();
+    if(!cacheDir.exists())
+      cacheDir.mkdirs();
+  }
+}
+{% endhighlight %}</div>
+<p>I've added the first things we know we will need, which are a map (imageMap) to store images for display, and reference to the directory where the longer-term image cache will be stored. In the constructor, find this directory by querying the device to see if external storage is mounted, and if not, by getting the default cache location. If we are using external storage (e.g. an SD card), we create a directory called "data/codehenge" for our app's cache.</p>
+<p>Now we will need a few classes to manage a proper queue of images for download. For each image put into the queue, we need to know the URL to find it at, and we will eventually need to know the ImageView to put it in. Here'a an ImageRef class to take care of that:</p>
+<div>
+{% highlight java %}
+private class ImageRef {
+  public String url;
+  public ImageView imageView;
+  public ImageRef(String u, ImageView i) {
+    url=u;
+    imageView=i;
+  }
+}
+{% endhighlight %}
+</div>
+<p>I'm making this a private class in my ImageManager class, but you could separate it out if you wanted to. For the actual queue, I'm using a stack of ImageRef objects. However, I'm wrapping this in its own class so I can add extra functionality. Because we know getView() can be called arbitrarily and often, for now I'll add the ability to clear all ImageRef objects from the queue that are pointing to a given ImageView, so we don't get too bottled up.</p>
+<div>
+{% highlight java %}
+private class ImageQueue {
+  private Stack<imageref> imageRefs = new Stack<imageref>();
+  //removes all instances of this ImageView
+  public void Clean(ImageView view) {
+    for(int i = 0 ;i < imageRefs.size();) {
+      if(imageRefs.get(i).imageView == view)
+        imageRefs.remove(i);
+      else ++i;
+    }
+  }
+}
+{% endhighlight %}
+</div>
+<p>We need a way to add images to the queue, so let's write a small queueImage() method:</p>
+<div>
+{% highlight java %}
+private void queueImage(String url, ImageView imageView) {
+  // This ImageView might have been used for other images, so we clear
+  // the queue of old tasks before starting.
+  imageQueue.Clean(imageView);
+  ImageRef p=new ImageRef(url, imageView);
+  synchronized(imageQueue.imageRefs) {
+    imageQueue.imageRefs.push(p);
+    imageQueue.imageRefs.notifyAll();
+  }
+  // Start thread if it's not started yet
+  if(imageLoaderThread.getState() == Thread.State.NEW)
+    imageLoaderThread.start();
+}
+{% endhighlight %}
+</div>
+<p>Using the method above we're able to push an imageRef for an image into the queue (remember to lock this action!) and start the background imageLoaderThread, if it isn't already started.</p>
+<p>Now we're ready to start some asynchronous coding. Basically, we need a thread to run in the background, watch the queue, and get images (either from our semi-persistent cache, or by downloading them) as they are queued. For this, let's create an ImageQueueManager class:</p>
+<div>
+{% highlight java %}
+private class ImageQueueManager implements Runnable {
+  @Override
+  public void run() {
+    try {
+      while(true) {
+        // Thread waits until there are images in the
+        // queue to be retrieved
+        if(imageQueue.imageRefs.size() == 0) {
+          synchronized(imageQueue.imageRefs) {
+            imageQueue.imageRefs.wait();
+          }
+        }
+        // When we have images to be loaded
+        if(imageQueue.imageRefs.size() != 0) {
+          ImageRef imageToLoad;
+          synchronized(imageQueue.imageRefs) {
+            imageToLoad = imageQueue.imageRefs.pop();
+          }
+          Bitmap bmp = getBitmap(imageToLoad.url);
+          imageMap.put(imageToLoad.url, bmp);
+          // TODO: Display image in ListView on UI thread
+        }
+        if(Thread.interrupted())
+          break;
+      }
+    } catch (InterruptedException e) {}
+  }
+}
+{% endhighlight %}</div>
+<p>This is a big one, but not too complex. Basically, this class is meant to run as a single background thread, so its implementing the Runnable interface and overriding its run() method. When run, this thread process will loop until interrupted, waiting for an image to show up in the queue. When an image is queued, it pops each imageRef from the stack in turn and calls getBitmap() (which we have yet to define) to get an Bitmap object, puts the image in our map, and will, once we define it, fire off a process on the UI thread to display the image in the ListView. I've put a TODO comment here, we'll come back to it in a little bit.</p>
+<p>For now, we know what getBitmap() needs to do, so let's define it:</p>
+<div>
+{% highlight java %}
+private Bitmap getBitmap(String url) {
+  String filename = String.valueOf(url.hashCode());
+  File f = new File(cacheDir, filename);
+  // Is the bitmap in our cache?
+  Bitmap bitmap = BitmapFactory.decodeFile(f.getPath());
+  if(bitmap != null) return bitmap;
+  // Nope, have to download it
+  try {
+    bitmap =
+      BitmapFactory.decodeStream(new URL(url).openConnection().getInputStream());
+    // save bitmap to cache for later
+    writeFile(bitmap, f);
+    return bitmap;
+  } catch (Exception ex) { ex.printStackTrace(); return null; }
+}
+private void writeFile(Bitmap bmp, File f) {
+  FileOutputStream out = null;
+  try {
+    out = new FileOutputStream(f);
+    bmp.compress(Bitmap.CompressFormat.PNG, 80, out);
+  } catch (Exception e) { e.printStackTrace(); }
+  finally {
+    try {
+      if (out != null ) out.close();
+    } catch(Exception ex) {}
+  }
+}
+{% endhighlight %}</div>
+<p>If you remember my last tutorial, some of this will look familiar. Namely, I have taken the BitmapFactory code straight out of the custom TweetItemAdapter and dropped it here, with some added functionality around it. Now, if we have the bitmap file cached locally, get it from there. If not, we use BitmapFactory to download it, and write it to the cache for next time. Note that in the writeFile() method we are compressing the bitmap into PNG format at 80% quality to save storage space and time. You can tweak this however you like, and check out the performance difference for your application.</p>
+<p>We're now done with ImageManager, and can move on to integrating it with our UI components.</p>
+<p>There are two paths we can take to display our image. First, if we have it sitting in our cache and available when getView() asks for it, we can just display it and move on. Alternatively, if we have to queue the download of the image, we need to be able to jump back into the UI thread as soon as the image is available to push it into view. Starting with the first path, let's look at an updated version of TweetItemAdapter:</p>
+<div>
+{% highlight java %}
+public class TweetItemAdapter extends ArrayAdapter<tweet> {
+  private ArrayList<tweet> tweets;
+  private Activity activity;
+  private static LayoutInflater inflater = null;
+  public ImageManager imageManager;
+  public TweetItemAdapter(Activity a, int textViewResourceId,
+                                          ArrayList<tweet> tweets) {
+    super(a, textViewResourceId, tweets);
+    this.tweets = tweets;
+    activity = a;
+    imageManager =
+      new ImageManager(activity.getApplicationContext());
+  }
+  public static class ViewHolder{
+    public TextView username;
+    public TextView message;
+    public ImageView image;
+  }
+  @Override public View getView(int position, View convertView, ViewGroup parent) {
+    View v = convertView;
+    ViewHolder holder;
+    if (v == null) {
+      LayoutInflater vi = (LayoutInflater) activity.getSystemService(Context.LAYOUT\_INFLATER\_SERVICE);
+      v = vi.inflate(R.layout.listitem, null);
+      holder = new ViewHolder();
+      holder.username = (TextView) v.findViewById(R.id.username);
+      holder.message = (TextView) v.findViewById(R.id.message);
+      holder.image = (ImageView) v.findViewById(R.id.avatar);
+      v.setTag(holder);
+    } else holder=(ViewHolder)v.getTag();
+    final Tweet tweet = tweets.get(position);
+    if (tweet != null) {
+      holder.username.setText(tweet.username);
+      holder.message.setText(tweet.message);
+      holder.image.setTag(tweet.image_url);
+      imageManager.displayImage(tweet.image_url, activity, holder.image);
+    }
+    return v;
+  }
+}
+{% endhighlight %}
+</div>
+<p>There are a few changes to this class since<a href="">last time</a>, but nothing severe. Out adapter now needs an instance of our ImageManager, and it also needs a reference to its Activity object, which you'll recall has to be passed to the ImageManager when it displays an image. We've also introduced the usage of a ViewHolder, which is a handy tool that optimizes performance a bit. Using a ViewHolder basically means we don't have to call findViewById for every single view, every time we want it, which adds up to a decent amount of computational savings. For some more information on ViewHolders and why you want to use them, check out <a href="http://www.screaming-penguin.com/node/7767">this post</a> by Charlie Collins. You'll also notice that when initially populating the View for a given Tweet, I now set the tag of the ImageView to the url of the image to be displayed. We'll use this later to verify that we are setting the image in the correct ImageView. Look at the end of getView() and you'll see where we address the "display the image immediately is possible" path. When we have both a Tweet object and a View that are not null, we call a method called displayImage() through the ImageManager:</p>
+{% highlight java %}
+public void displayImage(String url, Activity activity, ImageView imageView) {
+  if(imageMap.containsKey(url))
+    imageView.setImageBitmap(imageMap.get(url));
+  else {
+    queueImage(url, imageView);
+    imageView.setImageResource(R.drawable.icon);
+  }
+}
+{% endhighlight %} This is the place where we set the bitmap immediately if it is in our imageMap, or push it into our queue and instead put a placeholder there. The placeholder, R.drawable.icon, is a default Android icon you will probably find automatically included in your project. The reason for the placeholder is that we expect this method to be invoked anytime getView() is called, whether or not the image has been downloaded yet. So, if it hasn't, the placeholder will be displayed until we have a proper Twitter avatar. If you like, you can make this placeholder a different image, a blank image, or nothing at all.</p>
+<p>Now we need address our second path by writing some code to display the bitmap in the ListView, using the UI thread. As before, this is easily implemented as a class using the Runnable interface, like so:</p>
+<div>
+{% highlight java %}
+//Used to display bitmap in the UI thread
+private class BitmapDisplayer implements Runnable {
+  Bitmap bitmap;
+  ImageView imageView;
+  public BitmapDisplayer(Bitmap b, ImageView i) {
+    bitmap=b;
+    imageView=i;
+  }
+  public void run() {
+    if(bitmap != null)
+      imageView.setImageBitmap(bitmap);
+    else
+      imageView.setImageResource(R.drawable.icon);
+  }
+}
+{% endhighlight %}
+</div>
+<p>Now we have a class that can be run on a thread, that is instantiated with a bitmap and an ImageView it needs to be displayed in, whose run() method sets in the ImageView or replaces it with a placeholder image. Let's add this into the space we left for it in ImageQueueManager:</p>
+<div>
+{% highlight java %}
+private class ImageQueueManager implements Runnable {
+  @Override
+  public void run() {
+    try {
+      while(true) {
+        // Thread waits until there are images in the
+        // queue to be retrieved
+        if(imageQueue.imageRefs.size() == 0) {
+          synchronized(imageQueue.imageRefs) {
+            imageQueue.imageRefs.wait();
+          }
+        }
+        // When we have images to be loaded
+        if(imageQueue.imageRefs.size() != 0) {
+          ImageRef imageToLoad;
+          synchronized(imageQueue.imageRefs) {
+            imageToLoad = imageQueue.imageRefs.pop();
+          }
+          Bitmap bmp = getBitmap(imageToLoad.url);
+          imageMap.put(imageToLoad.url, bmp);
+          Object tag = imageToLoad.imageView.getTag();
+          // Make sure we have the right view - thread safety defender
+          if(tag != null && ((String)tag).equals(imageToLoad.url)) {
+            BitmapDisplayer bmpDisplayer =
+              new BitmapDisplayer(bmp, imageToLoad.imageView);
+            Activity a =
+              (Activity)imageToLoad.imageView.getContext();
+            a.runOnUiThread(bmpDisplayer);
+          }
+        }
+        if(Thread.interrupted())
+          break;
+      }
+    } catch (InterruptedException e) {}
+  }
+}
+{% endhighlight %}</div>
+<p>The ImageQueueManager class is now complete. Remember, when we have images in the queue, we get the bitmap from cache or download, then put it in our map. Now we continue by checking the tag to verify the bitmap we have belongs in this ImageView, create a new BitmapDisplayer object, get the activity from the ImageView, and use it to run the BitmapDisplayer operations in the UI thread. Notice the check of the ImageView tag: This allows us to be absolutely certain that we are putting the bitmap we have into the ImageView that wants it, which is basically our last stand against the inexplicable behavior of ListViews and getView().</p>
+<p>Last, but not least, is our Activity class, which remains basically unchanged from the previous tutorial. Here it is, for the sake of completeness:</p>
+<div>
+{% highlight java %}
+public class Example extends Activity {
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.main);
+    ArrayList<tweet> tweets = getTweets("android", 1);
+    ListView listView = (ListView) findViewById(R.id.ListViewId);
+    listView.setAdapter(new TweetItemAdapter(this, R.layout.listitem, tweets));
+  }
+  public ArrayList<tweet> getTweets(String searchTerm, int page) {
+    String searchUrl = "http://search.twitter.com/search.json?q=@" + searchTerm + "&rpp=25&page=" + page;
+    ArrayList<tweet> tweets = new ArrayList<tweet>();
+    HttpClient client = new  DefaultHttpClient();
+    HttpGet get = new HttpGet(searchUrl);
+    ResponseHandler<string> responseHandler = new BasicResponseHandler();
+    String responseBody = null;
+    try {
+      responseBody = client.execute(get, responseHandler);
+    } catch(Exception ex) {
+      ex.printStackTrace();
+    }
+    JSONObject jsonObject = null;
+    JSONParser parser=new JSONParser();
+    try {
+      Object obj = parser.parse(responseBody);
+      jsonObject=(JSONObject)obj;
+    } catch(Exception ex) {
+      Log.v("TEST","Exception: " + ex.getMessage());
+    }
+    JSONArray arr = null;
+    try {
+      Object j = jsonObject.get("results");
+      arr = (JSONArray)j;
+    } catch(Exception ex) {
+      Log.v("TEST","Exception: " + ex.getMessage());
+    }
+    for(Object t : arr) {
+      Tweet tweet = new Tweet(
+        ((JSONObject)t).get("from_user").toString(),
+        ((JSONObject)t).get("text").toString(),
+        ((JSONObject)t).get("profile_image_url").toString()
+      );
+      tweets.add(tweet);
+    }
+    return tweets;
+  }
+  /** Classes **/
+  public class Tweet {
+    public String username; public String message; public String image_url;
+    public Tweet(String username, String message, String url) {
+      this.username = username;
+      this.message = message;
+      this.image_url = url;
+    }
+  }
+}
+{% endhighlight %}
+</div>
+<p>And we're done! The code is complete, and ready to run. You will see a notable increase in UI responsiveness, and should really not notice any lag at all unless you swipe through a large list at warp speed.</p>
+<p>I've put the full project from this tutorial up on</p>
+<p><a href="https://github.com/cacois/TweetView">Github</a>, so go ahead and grab it, fork it, try it out for yourself. Happy coding!</p>
+<p><strong>Get 50% off my Node.js course <a href="http://search.twitter.com/api/">here</a></strong></p>
+<p>If you liked this article, help me out by sharing a 50% discount to my Node.js course here: <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://www.udemy.com/learn-nodejs-by-example/?couponCode=codehenge" data-text="Sign up for Learn Node.js by Example now and get 50% off!" data-via="AaronCois" data-size="large" data-hashtags="nodejs">Tweet</a> Thanks!</p>
+<p>You should follow me on Twitter here: <a href="https://twitter.com/AaronCois" class="twitter-follow-button" data-show-count="false" data-show-screen-name="false">Follow @AaronCois</a></p>

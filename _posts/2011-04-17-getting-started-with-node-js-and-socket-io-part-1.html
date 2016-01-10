@@ -1,0 +1,104 @@
+---
+layout: post
+title: Getting Started With node.js and socket.io - Part 1
+date: 2011-04-17 22:58:03.000000000 -04:00
+type: post
+published: true
+status: publish
+categories:
+- Open Source
+- Programming
+tags:
+- html
+- javascript
+- node.js
+- Programming
+- socket.io
+- web
+meta:
+  _edit_last: '1'
+  dsq_thread_id: '310009391'
+  suf_magazine_headline: 'on'
+  featured_image: http://media.tumblr.com/tumblr_l974955BoN1qdqxmk.png
+  thumbnail: http://media.tumblr.com/tumblr_l974955BoN1qdqxmk.png
+  suf_magazine_excerpt: 'on'
+  meta_description: The first post in my two-part tutorial on learning to use node.js
+    and socket.io. These posts builds a small example app using node.js and then adding
+    in socket.io, illustrating the basic concepts and techniques as we progress through
+    building and testing the code. Knowledge of javascript and the basic http protocol
+    will be helpful in understanding this content.
+  meta_keywords: socket.io, node.js, javascript, programming, development, code, example,
+    tutorial
+  _aioseop_title: Getting Started With node.js and socket.io - Part 1
+  _aioseop_description: The first post in my two-part tutorial on learning to use
+    node.js and socket.io. These posts builds a small example app using node.js and
+    then adding in socket.io, illustrating the basic concepts and techniques as we
+    progress through building and testing the code. Knowledge of javascript and the
+    basic http protocol will be helpful in understanding this content.
+  _aioseop_keywords: socket.io, node.js, javascript, programming, development, code,
+    example, tutorial
+  _networkpub_meta_published: new
+  _networkpub_meta_publish: '1'
+  _networkpub_meta_content: '0'
+  suf_thumbnail: http://media.tumblr.com/tumblr_l974955BoN1qdqxmk.png
+  suf_featured_image: http://media.tumblr.com/tumblr_l974955BoN1qdqxmk.png
+  suf_meta_description: The first post in my two-part tutorial on learning to use
+    node.js and socket.io. These posts builds a small example app using node.js and
+    then adding in socket.io, illustrating the basic concepts and techniques as we
+    progress through building and testing the code. Knowledge of javascript and the
+    basic http protocol will be helpful in understanding this content.
+  suf_meta_keywords: socket.io, node.js, javascript, programming, development, code,
+    example, tutorial
+author:
+  login: cacois
+  email: cacois@gmail.com
+  display_name: cacois
+  first_name: Constantine
+  last_name: Cois
+excerpt: "Like many developers out there, I've been interested in the potential of
+  real-time, high-throughput client/server communication in web apps using node.js
+  for some time. \r\n\r\nIn this post I'll go through the installation of node.js
+  and socket.io on OSX, then in my next post we'll make a simple test app from scratch
+  (which helps me to learn far better than just running a pre-made example). "
+---
+<p><figure><img src='{{ site.baseurl }}assets/tumblr_l974955BoN1qdqxmk.png' alt='' width='200' height='200'/><figcaption></div></figcaption></figure><p>  Like many developers out there, I've been interested in the potential of real-time, high-throughput client/server communication in web apps using <a title="node.js" href="http://nodejs.org/">node.js</a> for some time. Once I started researching, I was quickly lead to <a title="socket.io" href="http://socket.io/">socket.io</a> as well, which rocks...hard. What's that?  Not dealing with transport mechanisms, and getting cross-browser (including mobile!) support for free? Yes please!</p>
+<p>In this post I'll go through the installation of node.js and socket.io on Mac OSX, then in my next post we'll make a simple test app from scratch (which helps me to learn far better than just running a pre-made example). Since I'm in OSX, I can make things super easy and use <a title="OSX Homebrew" href="http://mxcl.github.com/homebrew/">brew</a> to install node. Brew is an extremely handy little utility that can install UNIX tools that were not included in OSX. If you already have brew installed, skip this step. If not, go ahead and install it:</p>
+{% highlight bash %}
+ruby -e "$(curl -fsSLk https://gist.github.com/raw/323731/install_homebrew.rb)"
+{% endhighlight %}
+<p>&nbsp;</p>
+<p>Now that we have brew installed, installing node becomes very easy:</p>
+{% highlight bash %}
+brew install node
+{% endhighlight %}
+<p>&nbsp;</p>
+<p>No muss, no fuss. This will install node.js at</p>
+{% highlight bash %}
+/usr/local/lib/node/
+{% endhighlight %}
+<p>&nbsp;</p>
+<p>The only potential downside is that brew installs the current stable version of node, which is 0.4.6 as I'm writing this, though 0.5.0beta does exist. This probably won't bother you, but if you want the latest and greatest, get the source from github and build it yourself. <a title="Node.js github" href="https://github.com/joyent/node/wiki/Installation">Here</a> are some instructions. You may also need to go the github route if for some reason brew doesn't work for you.</p>
+<p><b>Want to master Node.js?</b> Try my highly-rated online course <a href="http://www.udemy.com/learn-nodejs-by-example/" title="Learn Node.js by Example">Learn Node.js by Example</a>. <a href="http://www.udemy.com/learn-nodejs-by-example/?couponCode=codehenge">Click here</a> to get 50% off on screencasts, interactive projects, and more!</p>
+<p>Now its time to install a little enhancement called Socket.io. Socket.io is only one of a number of packages that have been written for node, so the easiest way to install it and potentially other useful packages is with the Node Package Manager, <a title="NPM" href="https://github.com/isaacs/npm">NPM</a>. Install NPM using:</p>
+{% highlight bash %}curl http://npmjs.org/install.sh | sh
+{% endhighlight %}
+<p>&nbsp;</p>
+<p>We can now use NPM to install socket.io. Here we go:</p>
+{% highlight bash %}npm install socket.io
+{% endhighlight %}
+<p>&nbsp;</p>
+<p>Ok, we're all set. You now have both node.js and socket.io installed. At this point, you could start an example node server by going to</p>
+{% highlight bash %}/usr/local/lib/node/socket.io/example/{% endhighlight %}
+<p>and issuing the command</p>
+{% highlight bash %}node server.js
+{% endhighlight %}
+<p>&nbsp;</p>
+<p>You should see output similar to this:</p>
+<p><figure><img src='{{ site.baseurl }}assets/Screen-shot-2011-04-17-at-10.23.12-PM.png' alt='' width='500' height='70'/><figcaption></a></p></figcaption></figure><p>&nbsp;</p>
+<p>This starts the test node.js socket.io server, which will be default listen on port 8080. To see the demo, navigate to</p>
+<p><span style="font-family: monospace;">http://localhost:8080</span></p>
+<p>in any web browser and poke around. There is a nice chat example that will allow you to watch server output in the terminal as communications between the client (your browser) and the server commence.</p>
+<p>Now you have a working node.js and socket.io installation on OSX, and have possibly gotten some other handy tools like brew and NPM in the process. Congratulations! Now you can dive in and look at the code of the example/server.js we just used to start the node server to try to understand the inner workings. This always falls a bit short for me - I like to get my hands dirty. So, in my next post we'll build a small node server and client, adding to it as we go to illustrate the basic socket.io API and the basic functionality of socket.io and node.js.</p>
+<p>Until then...</p>
+<p>Continue <a href="http://codehenge.net/blog/2011/12/getting-started-with-node-js-and-socket-io-v0-7-part-2/">here</a> if you are using Socket.io v0.7, v0.8, or above.</p>
+<p>If you are working with Socket.io v0.6, continue on to <a href="http://codehenge.net/blog/2011/05/getting-started-with-node-js-and-socket-io-part-2/">this version</a> of the tutorial.</p>

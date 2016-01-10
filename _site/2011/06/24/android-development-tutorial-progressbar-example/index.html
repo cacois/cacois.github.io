@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <title>Codehenge - Who built it, and why? A blog about software, technology, and more</title>
+    <meta name="description" content="Codehenge" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+    <!-- Customisation  -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <link rel="stylesheet" href="/pygments.css">
+
+</head>
+<body class="post-template">
+
+    <header class="main-header post-head no-cover">
+    <nav class="main-nav  clearfix">
+        <a class="back-button icon-arrow-left" href="/ ">Home</a>
+        <a class="subscribe-button icon-feed" href="/rss.xml">Subscribe</a>
+    </nav>
+</header>
+
+<main class="content" role="main">
+
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Android Development Tutorial: ProgressBar Example</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2011-06-24">24 Jun 2011</time>
+                
+                    on android, open source, and programming
+                
+            </section>
+        </header>
+
+<!--         <header class="post-header">
+            <a id="blog-logo" href="blog url">
+                
+                    <img src="true" alt="Codehenge" />
+                
+            </a>
+        </header> -->
+
+        <!-- <span class="post-meta">
+            <time datetime="2011-06-24">24 Jun 2011</time>
+            
+                on android, open source, and programming
+            
+        </span> -->
+
+        <!-- <h1 class="post-title">Android Development Tutorial: ProgressBar Example</h1> -->
+
+        <section class="post-content">
+            </p>
+<p>The Android ProgressBar is a useful UI component that most developers will quickly find need of.  Displaying progress, even an indeterminate "loading" indicator, provides crucial feedback to a user, eliminating frustration and confusion while your app is churning away in the background. </p>
+<p>Today I'll demonstrate using an indeterminate ProgressBar within a ListView while loading web content. I'll be modifying the <a href="https://github.com/cacois/TweetView">TweetView project</a> from my previous <a href="http://codehenge.net/blog/2011/06/android-development-tutorial-asynchronous-lazy-loading-and-caching-of-listview-images/">post</a>.</p>
+<p>Note: You can find the full project with the ProgressBar feature in the "progress_bar" <a href="https://github.com/cacois/TweetView/tree/progress_bar">branch of the TweetView Github project</a>.</p>
+<p>Let's get started. Recall that the previous iteration of the TweetView app displayed a stock Android icon image by default while the Twitter avatars were loaded for each item in the ListView. Of course, this is not ideal, as it gives the user no indication of what is going on, and new images suddenly replacing the icon may be confusing. A better user experience would be to place a loading image in each ListView item until the proper avatar is retrieved and displayed. To avoid the complication of trying determine progress of an image download (especially since our avatar images are not very large, and will download fairly quickly), I'll use an indeterminate ProgressBar:</p>
+<p><figure><img src='/assets/singleprogressbar.jpg' alt='' width='102' height='80'/><figcaption></a></p></figcaption></figure><p><strong>Step 1: Insert a ProgressBar UI component into our listitem.xml layout file.</strong></p>
+<p>We'll put the ProgressBar element in the same spot we intend the avatar to occupy. This way, we can just set the visibility of the avatar ImageView to "gone" until the image is ready, and then switch the ImageView to "visible" and the ProgressBar to "gone" when we display the image. Here's the updated layout file:</p>
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span><span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;linearlayout</span> <span class="na">xmlns:android=</span><span class="s">&quot;http://schemas.android.com/apk/res/android&quot;</span> <span class="na">android:layout_height=</span><span class="s">&quot;wrap_content&quot;</span> <span class="na">android:gravity=</span><span class="s">&quot;left|center&quot;</span> <span class="na">android:layout_width=</span><span class="s">&quot;wrap_content&quot;</span> <span class="na">android:paddingbottom=</span><span class="s">&quot;5px&quot;</span> <span class="na">android:paddingtop=</span><span class="s">&quot;5px&quot;</span> <span class="na">android:paddingleft=</span><span class="s">&quot;5px&quot;</span><span class="nt">&gt;</span>
+<span class="nt">&lt;p&gt;</span>  <span class="nt">&lt;relativelayout</span> <span class="na">android:layout_width=</span><span class="s">&quot;wrap_content&quot;</span> <span class="na">android:layout_height=</span><span class="s">&quot;fill_parent&quot;</span><span class="nt">&gt;&lt;br</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;imageview</span> <span class="na">android:id=</span><span class="s">&quot;@+id/avatar&quot;</span> <span class="na">android:layout_width=</span><span class="s">&quot;wrap_content&quot;</span> <span class="na">android:layout_height=</span><span class="s">&quot;fill_parent&quot;</span> <span class="na">android:layout_marginright=</span><span class="s">&quot;6dip&quot;</span> <span class="na">android:visibility=</span><span class="s">&quot;gone&quot;</span> <span class="nt">/&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;progressbar</span> <span class="na">android:id=</span><span class="s">&quot;@+id/progress_bar&quot;</span> <span class="na">android:layout_width=</span><span class="s">&quot;wrap_content&quot;</span> <span class="na">android:layout_height=</span><span class="s">&quot;wrap_content&quot;</span> <span class="na">android:maxwidth=</span><span class="s">&quot;30dip&quot;</span> <span class="na">android:minwidth=</span><span class="s">&quot;30dip&quot;</span> <span class="na">android:maxheight=</span><span class="s">&quot;30dip&quot;</span> <span class="na">android:minheight=</span><span class="s">&quot;30dip&quot;</span> <span class="na">android:layout_marginright=</span><span class="s">&quot;6dip&quot;</span> <span class="na">android:indeterminate=</span><span class="s">&quot;true&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;linearlayout</span> <span class="na">android:orientation=</span><span class="s">&quot;vertical&quot;</span> <span class="na">android:layout_width=</span><span class="s">&quot;0dip&quot;</span> <span class="na">android:layout_weight=</span><span class="s">&quot;1&quot;</span> <span class="na">android:layout_height=</span><span class="s">&quot;fill_parent&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;textview</span> <span class="na">android:id=</span><span class="s">&quot;@+id/username&quot;</span> <span class="na">android:layout_width=</span><span class="s">&quot;wrap_content&quot;</span> <span class="na">android:layout_height=</span><span class="s">&quot;wrap_content&quot;</span> <span class="na">android:gravity=</span><span class="s">&quot;center&quot;</span> <span class="nt">/&gt;&lt;br</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;textview</span> <span class="na">android:id=</span><span class="s">&quot;@+id/message&quot;</span> <span class="na">android:layout_width=</span><span class="s">&quot;wrap_content&quot;</span> <span class="na">android:layout_height=</span><span class="s">&quot;wrap_content&quot;</span> <span class="na">android:layout_marginleft=</span><span class="s">&quot;10px&quot;</span> <span class="na">android:textcolor=</span><span class="s">&quot;#0099CC&quot;</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;/linearlayout&gt;</span>
+<span class="nt">&lt;/relativelayout&gt;&lt;/linearlayout&gt;</span></code></pre></div>
+<p>You'll see that i've added something more than a ProgressBar element: a RelativeLayout. If we don't set the ProgressBar's height to fill_parent, it will squish our list items vertically to match it's height. However, the ProgressBar element, unlike an ImageView, will stretch and distort if told to "fill_parent" in its layout_height or layout_width value. to avoid distortion of the indeterminate ProgressBar or the hiding of the text from our tweets, I've added the RelativeLayout to encapsulate ProgressBar and ImageView alike, providing the ability to stretch vertically and buffer our round ProgressBar with dead space. </p>
+<p>Note also that I've set the sizes of the ProgressBar to match the size of the avatars we download from Twitter. You will want to change these size settings as appropriate for your app. This, combined with the layout hack above, will make our tweet items have a consistent layout, whether we are displaying avatars or a ProgressBar.</p>
+<p><strong>Step 2: TweetImageAdapter and our ViewHolder class need to be altered to store the ProgressBar for each list item, and pass it to the ImageManager.displayImage() method so it can be made invisible when the correct image is displayed.</strong></p>
+<p>First we add a ProgressBar member to the ViewHolder class:</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">ViewHolder</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="n">TextView</span> <span class="n">username</span><span class="o">;</span>
+  <span class="kd">public</span> <span class="n">TextView</span> <span class="n">message</span><span class="o">;</span>
+  <span class="kd">public</span> <span class="n">ImageView</span> <span class="n">image</span><span class="o">;</span>
+  <span class="kd">public</span> <span class="n">ProgressBar</span> <span class="n">progress</span><span class="o">;</span> <span class="c1">//ADDED</span>
+<span class="o">}</span></code></pre></div>
+<p>Then we alter the tweetItemAdapter.getView() method to retrieve and pass along this ProgressBar object to the ImageManager through the displayImage() method:</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Override</span>
+<span class="kd">public</span> <span class="n">View</span> <span class="nf">getView</span><span class="o">(</span><span class="kt">int</span> <span class="n">position</span><span class="o">,</span> <span class="n">View</span> <span class="n">convertView</span><span class="o">,</span> <span class="n">ViewGroup</span> <span class="n">parent</span><span class="o">)</span> <span class="o">{</span>
+  <span class="n">View</span> <span class="n">v</span> <span class="o">=</span> <span class="n">convertView</span><span class="o">;</span>
+  <span class="n">ViewHolder</span> <span class="n">holder</span><span class="o">;</span>
+  <span class="k">if</span> <span class="o">(</span><span class="n">v</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">LayoutInflater</span> <span class="n">vi</span> <span class="o">=</span> <span class="o">(</span><span class="n">LayoutInflater</span><span class="o">)</span><span class="n">activity</span><span class="o">.</span><span class="na">getSystemService</span><span class="o">(</span><span class="n">Context</span><span class="o">.</span><span class="na">LAYOUT_INFLATER_SERVICE</span><span class="o">);</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">vi</span><span class="o">.</span><span class="na">inflate</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">listitem</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+    <span class="n">holder</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">ViewHolder</span><span class="o">();</span>
+    <span class="n">holder</span><span class="o">.</span><span class="na">username</span> <span class="o">=</span> <span class="o">(</span><span class="n">TextView</span><span class="o">)</span> <span class="n">v</span><span class="o">.</span><span class="na">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">username</span><span class="o">);</span>
+    <span class="n">holder</span><span class="o">.</span><span class="na">message</span> <span class="o">=</span> <span class="o">(</span><span class="n">TextView</span><span class="o">)</span> <span class="n">v</span><span class="o">.</span><span class="na">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">message</span><span class="o">);</span>
+    <span class="n">holder</span><span class="o">.</span><span class="na">image</span> <span class="o">=</span> <span class="o">(</span><span class="n">ImageView</span><span class="o">)</span> <span class="n">v</span><span class="o">.</span><span class="na">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">avatar</span><span class="o">);</span>
+    <span class="n">holder</span><span class="o">.</span><span class="na">progress</span> <span class="o">=</span> <span class="o">(</span><span class="n">ProgressBar</span><span class="o">)</span> <span class="n">v</span><span class="o">.</span><span class="na">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">progress_bar</span><span class="o">);</span> <span class="c1">//ADDED</span>
+    <span class="n">v</span><span class="o">.</span><span class="na">setTag</span><span class="o">(</span><span class="n">holder</span><span class="o">);</span>
+  <span class="o">}</span>
+  <span class="k">else</span>
+    <span class="n">holder</span><span class="o">=(</span><span class="n">ViewHolder</span><span class="o">)</span><span class="n">v</span><span class="o">.</span><span class="na">getTag</span><span class="o">();</span>
+  <span class="kd">final</span> <span class="n">Tweet</span> <span class="n">tweet</span> <span class="o">=</span> <span class="n">tweets</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">position</span><span class="o">);</span>
+  <span class="k">if</span> <span class="o">(</span><span class="n">tweet</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">holder</span><span class="o">.</span><span class="na">username</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">tweet</span><span class="o">.</span><span class="na">username</span><span class="o">);</span>
+    <span class="n">holder</span><span class="o">.</span><span class="na">message</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">tweet</span><span class="o">.</span><span class="na">message</span><span class="o">);</span>
+    <span class="n">holder</span><span class="o">.</span><span class="na">image</span><span class="o">.</span><span class="na">setTag</span><span class="o">(</span><span class="n">tweet</span><span class="o">.</span><span class="na">image_url</span><span class="o">);</span>
+    <span class="n">imageManager</span><span class="o">.</span><span class="na">displayImage</span><span class="o">(</span><span class="n">tweet</span><span class="o">.</span><span class="na">image_url</span><span class="o">,</span> <span class="n">activity</span><span class="o">,</span>
+      <span class="n">holder</span><span class="o">.</span><span class="na">image</span><span class="o">,</span> <span class="n">holder</span><span class="o">.</span><span class="na">progress</span><span class="o">);</span> <span class="c1">//CHANGED</span>
+  <span class="o">}</span>
+  <span class="k">return</span> <span class="n">v</span><span class="o">;</span>
+<span class="o">}</span></code></pre></div>
+<p>Ok, now our ImageManager, the class responsible for updating the image displayed when an avatar has finished downloading, has access to the ProgressBar component as well as the ImageView. We're ready for the last step.</p>
+<div class="note" style="background-color:#f2f2e6;margin-top:50px;margin-bottom:50px">
+<div style="padding:5px;font-family: 'Times New Roman', Times, serif;text-align:center;margin: 0px auto;font-style:oblique;font-size:30px;">Learn Node.js by Example</div>
+<p style="padding:10px;font-family: 'Times New Roman', Times, serif;text-align:center;margin: 0px auto;font-size:18px;"> Take my online course featuring screencasts and sample projects!</p>
+<div class="signup_button">
+<a href="http://www.udemy.com/learn-nodejs-by-example/"><br />
+</a><br />
+<h3 style="color:#ffffff">Sign up now</h3>
+<p>30-day money back guarantee!</p>
+</div>
+</div>
+<p><strong>Step 3: Change the image display methods to manage visibility of the ImageView and ProgressBar list item components, as well as to set the appropriate source image for the ImageView. Recall that we had two methods capable of displaying an image, one that could do so immediately (if the image was found in our local cache) and one that operated asynchronously, displaying the image as soon as the background download process is complete. </strong></p>
+<p>The first method, displayImage(), can be altered like so:</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">displayImage</span><span class="o">(</span><span class="n">String</span> <span class="n">url</span><span class="o">,</span> <span class="n">Activity</span> <span class="n">activity</span><span class="o">,</span>
+  <span class="n">ImageView</span> <span class="n">imageView</span><span class="o">,</span> <span class="n">ProgressBar</span> <span class="n">progressBar</span><span class="o">)</span> <span class="o">{</span>
+  <span class="k">if</span><span class="o">(</span><span class="n">imageMap</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="n">url</span><span class="o">))</span> <span class="o">{</span>
+    <span class="n">imageView</span><span class="o">.</span><span class="na">setImageBitmap</span><span class="o">(</span><span class="n">imageMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">url</span><span class="o">));</span>
+    <span class="n">progressBar</span><span class="o">.</span><span class="na">setVisibility</span><span class="o">(</span><span class="n">View</span><span class="o">.</span><span class="na">GONE</span><span class="o">);</span> <span class="c1">//ADDED</span>
+    <span class="n">imageView</span><span class="o">.</span><span class="na">setVisibility</span><span class="o">(</span><span class="n">View</span><span class="o">.</span><span class="na">VISIBLE</span><span class="o">);</span> <span class="c1">//ADDED</span>
+  <span class="o">}</span>
+  <span class="k">else</span> <span class="o">{</span>
+    <span class="n">queueImage</span><span class="o">(</span><span class="n">url</span><span class="o">,</span> <span class="n">activity</span><span class="o">,</span> <span class="n">imageView</span><span class="o">,</span> <span class="n">progressBar</span><span class="o">);</span>
+    <span class="n">imageView</span><span class="o">.</span><span class="na">setVisibility</span><span class="o">(</span><span class="n">View</span><span class="o">.</span><span class="na">GONE</span><span class="o">);</span> <span class="c1">//ADDED</span>
+    <span class="n">progressBar</span><span class="o">.</span><span class="na">setVisibility</span><span class="o">(</span><span class="n">View</span><span class="o">.</span><span class="na">VISIBLE</span><span class="o">);</span> <span class="c1">//ADDED</span>
+  <span class="o">}</span>
+<span class="o">}</span></code></pre></div>
+<p>Notice that the ProgressBar object is now being passed in, as designed in the last step. Using this, we are able to set visibility of the ImageView/ProgressBar UI elements (making sure only one is visible at any given time), depending on whether the image bitmap has been set or not.</p>
+<p>Additionally, we pass the progressBar object along into the queueImage method - more on that soon.</p>
+<p>The second place we need to add this visibility shuffle code is the run() method of the Runnable BitmapDisplayer class, which will be invoked on the UI thread, from the background thread, to set the image. Same basic changes - the BitmapDisplayer class now looks like:</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="c1">//Used to display bitmap in the UI thread</span>
+<span class="kd">private</span> <span class="kd">class</span> <span class="nc">BitmapDisplayer</span> <span class="kd">implements</span> <span class="n">Runnable</span> <span class="o">{</span>
+  <span class="n">Bitmap</span> <span class="n">bitmap</span><span class="o">;</span>
+  <span class="n">ImageView</span> <span class="n">imageView</span><span class="o">;</span>
+  <span class="n">ProgressBar</span> <span class="n">progressBar</span><span class="o">;</span>
+  <span class="kd">public</span> <span class="nf">BitmapDisplayer</span><span class="o">(</span><span class="n">Bitmap</span> <span class="n">b</span><span class="o">,</span> <span class="n">ImageView</span> <span class="n">i</span><span class="o">,</span> <span class="n">ProgressBar</span> <span class="n">p</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">bitmap</span> <span class="o">=</span> <span class="n">b</span><span class="o">;</span>
+    <span class="n">imageView</span> <span class="o">=</span> <span class="n">i</span><span class="o">;</span>
+    <span class="n">progressBar</span> <span class="o">=</span> <span class="n">p</span><span class="o">;</span>
+  <span class="o">}</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">if</span><span class="o">(</span><span class="n">bitmap</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">imageView</span><span class="o">.</span><span class="na">setImageBitmap</span><span class="o">(</span><span class="n">bitmap</span><span class="o">);</span>
+      <span class="n">progressBar</span><span class="o">.</span><span class="na">setVisibility</span><span class="o">(</span><span class="n">View</span><span class="o">.</span><span class="na">GONE</span><span class="o">);</span> <span class="c1">//ADDED</span>
+      <span class="n">imageView</span><span class="o">.</span><span class="na">setVisibility</span><span class="o">(</span><span class="n">View</span><span class="o">.</span><span class="na">VISIBLE</span><span class="o">);</span> <span class="c1">//ADDED</span>
+    <span class="o">}</span>
+    <span class="k">else</span> <span class="o">{</span>
+      <span class="n">imageView</span><span class="o">.</span><span class="na">setVisibility</span><span class="o">(</span><span class="n">View</span><span class="o">.</span><span class="na">GONE</span><span class="o">);</span> <span class="c1">//ADDED</span>
+      <span class="n">progressBar</span><span class="o">.</span><span class="na">setVisibility</span><span class="o">(</span><span class="n">View</span><span class="o">.</span><span class="na">VISIBLE</span><span class="o">);</span> <span class="c1">//ADDED</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span></code></pre></div>
+<p>Step 5: Last, but not least, you'll notice above that the BitmapDisplayer object needs to have a ProgressBar object passed in as an input parameter. The BitmapDisplayer object in TweetView is populated by data from ImageRef objects, so ImageRef objects now need to contain this additional object. Let's take care of that, and while we are at it, change the ImageQueueManager run() method to get the BitmapDisplayer the updated input parameters that it needs:</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">private</span> <span class="kd">class</span> <span class="nc">ImageRef</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="n">String</span> <span class="n">url</span><span class="o">;</span>
+  <span class="kd">public</span> <span class="n">ImageView</span> <span class="n">imageView</span><span class="o">;</span>
+  <span class="kd">public</span> <span class="n">ProgressBar</span> <span class="n">progressBar</span><span class="o">;</span>
+  <span class="kd">public</span> <span class="nf">ImageRef</span><span class="o">(</span><span class="n">String</span> <span class="n">u</span><span class="o">,</span> <span class="n">ImageView</span> <span class="n">i</span><span class="o">,</span> <span class="n">ProgressBar</span> <span class="n">p</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">u</span><span class="o">;</span>
+    <span class="n">imageView</span> <span class="o">=</span> <span class="n">i</span><span class="o">;</span>
+    <span class="n">progressBar</span> <span class="o">=</span> <span class="n">p</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+<span class="kd">private</span> <span class="kd">class</span> <span class="nc">ImageQueueManager</span> <span class="kd">implements</span> <span class="n">Runnable</span> <span class="o">{</span>
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">try</span> <span class="o">{</span>
+      <span class="k">while</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// Thread waits until there are images in the</span>
+        <span class="c1">// queue to be retrieved</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">imageQueue</span><span class="o">.</span><span class="na">imageRefs</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+          <span class="kd">synchronized</span><span class="o">(</span><span class="n">imageQueue</span><span class="o">.</span><span class="na">imageRefs</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">imageQueue</span><span class="o">.</span><span class="na">imageRefs</span><span class="o">.</span><span class="na">wait</span><span class="o">();</span>
+          <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="c1">// When we have images to be loaded</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">imageQueue</span><span class="o">.</span><span class="na">imageRefs</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">ImageRef</span> <span class="n">imageToLoad</span><span class="o">;</span>
+          <span class="kd">synchronized</span><span class="o">(</span><span class="n">imageQueue</span><span class="o">.</span><span class="na">imageRefs</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">imageToLoad</span> <span class="o">=</span> <span class="n">imageQueue</span><span class="o">.</span><span class="na">imageRefs</span><span class="o">.</span><span class="na">pop</span><span class="o">();</span>
+          <span class="o">}</span>
+          <span class="n">Bitmap</span> <span class="n">bmp</span> <span class="o">=</span> <span class="n">getBitmap</span><span class="o">(</span><span class="n">imageToLoad</span><span class="o">.</span><span class="na">url</span><span class="o">);</span>
+          <span class="n">imageMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">imageToLoad</span><span class="o">.</span><span class="na">url</span><span class="o">,</span> <span class="n">bmp</span><span class="o">);</span>
+          <span class="n">Object</span> <span class="n">tag</span> <span class="o">=</span> <span class="n">imageToLoad</span><span class="o">.</span><span class="na">imageView</span><span class="o">.</span><span class="na">getTag</span><span class="o">();</span>
+          <span class="c1">// Make sure we have the right view - thread safety defender</span>
+          <span class="k">if</span><span class="o">(</span><span class="n">tag</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="o">((</span><span class="n">String</span><span class="o">)</span><span class="n">tag</span><span class="o">).</span><span class="na">equals</span><span class="o">(</span><span class="n">imageToLoad</span><span class="o">.</span><span class="na">url</span><span class="o">))</span> <span class="o">{</span>
+            <span class="n">BitmapDisplayer</span> <span class="n">bmpDisplayer</span> <span class="o">=</span>
+              <span class="k">new</span> <span class="nf">BitmapDisplayer</span><span class="o">(</span><span class="n">bmp</span><span class="o">,</span> <span class="n">imageToLoad</span><span class="o">.</span><span class="na">imageView</span><span class="o">,</span>
+                <span class="n">imageToLoad</span><span class="o">.</span><span class="na">progressBar</span><span class="o">);</span>
+            <span class="n">Activity</span> <span class="n">a</span> <span class="o">=</span>
+              <span class="o">(</span><span class="n">Activity</span><span class="o">)</span><span class="n">imageToLoad</span><span class="o">.</span><span class="na">imageView</span><span class="o">.</span><span class="na">getContext</span><span class="o">();</span>
+            <span class="n">a</span><span class="o">.</span><span class="na">runOnUiThread</span><span class="o">(</span><span class="n">bmpDisplayer</span><span class="o">);</span>
+          <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">Thread</span><span class="o">.</span><span class="na">interrupted</span><span class="o">())</span>
+          <span class="k">break</span><span class="o">;</span>
+      <span class="o">}</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{}</span>
+  <span class="o">}</span>
+<span class="o">}</span></code></pre></div>
+<p>All done!  Now we will see a lovely perpetually spinning progress wheel, sure to delight users while they wait for Twitter avatars to be downloaded. Best of all, through some simple layout modifications, we should see no distortion or inconsistency in our item layouts, leading to a pleasant user experience.</p>
+<p>I've created a new branch of the TweetView Github project containing these modifications. You can find it here: <a href="https://github.com/cacois/TweetView/tree/progress_bar">progress_bar branch</a>.  Just switch to this branch to see this version of the app.</p>
+<p>As always, comments or questions are very welcome. Happy coding!</p></p>
+<p><small><small><small>Technorati code: 7ESRQSJMX8BM</small></small></small></p>
+
+        </section>
+
+        
+
+        <footer class="post-footer">
+            <!-- If we want to display author's name and bio -->
+            
+                <figure class="author-image">
+                    <a class="img" href="/ " style="background-image: url(/assets/images/profile2.jpg)">
+                    <span class="hidden">Constantine Aaron Cois's Picture</span></a>
+                </figure>
+                <section class="author">
+                    <!-- Author Name -->
+                    <h4> Constantine Aaron Cois </h4>
+                    <!-- Author Bio -->
+                    <p>
+                         I code, I teach, I write. Want to know more <a href='/about.html'> about me? </a> 
+                    </p>
+                </section>
+            
+
+            <!-- Share links section -->
+            <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?text=Android Development Tutorial: ProgressBar Example&amp;url=http://www.codehenge.net/2011/06/24/android-development-tutorial-progressbar-example/"
+        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://www.codehenge.net/2011/06/24/android-development-tutorial-progressbar-example/"
+        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://www.codehenge.net/2011/06/24/android-development-tutorial-progressbar-example/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+
+            <!-- Disqus comments -->
+            
+
+        </footer>
+
+    </article>
+
+</main>
+
+    <footer class="site-footer clearfix">
+      <section class="copyright">
+        <a href="/">Codehenge</a> &copy;
+               &bull; All rights reserved.
+      </section>
+      <section class="poweredby">Made with Jekyll using
+        <a href="http://github.com/rosario/kasper">Kasper theme</a>
+      </section>
+    </footer>
+
+    <script type="text/javascript" src="/assets/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="/assets/js/index.js"></script>
+
+    <!-- Google Analytics Tracking code -->
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-XXXXXXXX-X']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>
+</body>
+</html>

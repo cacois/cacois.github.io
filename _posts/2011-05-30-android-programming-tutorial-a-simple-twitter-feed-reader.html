@@ -1,0 +1,211 @@
+---
+layout: post
+title: Android Development Tutorial - A Simple Twitter Feed Reader
+date: 2011-05-30 16:41:53.000000000 -04:00
+type: post
+published: true
+status: publish
+categories:
+- Android
+- Programming
+tags:
+- Android
+- github
+- Java
+- Mobile
+- Open Source
+- Programming
+meta:
+  _edit_last: '1'
+  dsq_thread_id: ''
+  _aioseop_title: Android Development Tutorial - A Simple Twitter Feed Reader
+  _aioseop_description: This post builds on my previous Custom Android ListView tutorial
+    to create a simple Android Twitter feed reader app. Using this app as an example,
+    this tutorial introduces concepts like JSON deserialization, the Android BitmapFactory,
+    and independent image icons for ListView items.
+  _aioseop_keywords: android, listview, json, deserialization, bitmap, bitmapfactory,
+    twitter
+  thumbnail: http://9.mshcdn.com/wp-content/uploads/2009/10/twitter-android.jpg
+  featured_image: http://9.mshcdn.com/wp-content/uploads/2009/10/twitter-android.jpg
+  suf_magazine_headline: 'on'
+  suf_magazine_excerpt: 'on'
+  meta_description: This post builds on my previous Custom Android ListView tutorial
+    to create a simple Android Twitter feed reader app. Using this app as an example,
+    this tutorial introduces concepts like JSON deserialization, the Android BitmapFactory,
+    and independent image icons for ListView items.
+  meta_keywords: android, listview, json, deserialization, bitmap, bitmapfactory,
+    twitter
+  _sociableoff: '1'
+  _networkpub_meta_published: new
+  sponge: '1'
+  _networkpub_meta_publish: '1'
+  _networkpub_meta_content: '0'
+  suf_thumbnail: http://9.mshcdn.com/wp-content/uploads/2009/10/twitter-android.jpg
+  suf_featured_image: http://9.mshcdn.com/wp-content/uploads/2009/10/twitter-android.jpg
+  suf_meta_description: This post builds on my previous Custom Android ListView tutorial
+    to create a simple Android Twitter feed reader app. Using this app as an example,
+    this tutorial introduces concepts like JSON deserialization, the Android BitmapFactory,
+    and independent image icons for ListView items.
+  suf_meta_keywords: android, listview, json, deserialization, bitmap, bitmapfactory,
+    twitter
+author:
+  login: cacois
+  email: cacois@gmail.com
+  display_name: cacois
+  first_name: Constantine
+  last_name: Cois
+excerpt: "Last week I demonstrated designing and implementing customized layouts for
+  Android ListView items, including some simple example code. Today i'll expand on
+  that code to make something a little closer to an actual app: a Twitter feed reader
+  for Android. I'll use this exercise to illustrate some new tools and concepts in
+  the process such as working with JSON data and the Android BitmapFactory.\r\n"
+---
+<div style="float:left;margin:0 10px 5px 0;">
+<p><figure><img src='{{ site.baseurl }}assets/twitter-android.jpg' alt='' width='150' height='150'/><figcaption><a href="http://codehenge.net/blog/2011/05/customizing-android-listview-item-layout/"</figcaption></figure><p>Last week I demonstrated designing and implementing customized layouts for Android ListView items, including some simple example code. This time around I'd like to expand on that code to make something a little closer to an actual app, illustrating some new tools and concepts in the process such as working with JSON data and the Android BitmapFactory.</p>
+<p>In this post I'll show you how to implement a Twitter feed reader for Android. Let's start by familiarizing ourselves with the <a href="http://dev.twitter.com/doc/get/search">Twitter Search API</a> Say we wanted to see what Twitter users have to say about Android today. A Twitter API search query would look something like:</p>
+<p><a href="http://search.twitter.com/search.json?q=@android" target="_blank">http://search.twitter.com/search.json?q=@android</a></p>
+<p>Twitter's Search API allows up to 100 results to be returned per query, which is more than enough for our example today, but which introduces some interesting challenges as we want to display more data in a user-friendly fashion - more on that later. For today's purposes, I'll restrict return data to 25 results, using the following query:</p>
+<p><a href="http://search.twitter.com/search.json?q=@android&rpp=25&page=1" target="_blank">http://search.twitter.com/search.json?q=@android&amp;rpp=25&amp;page=1</a></p>
+<p>The "page" parameter can be incremented to step through chunks of 25 results in sequential queries. Go ahead and click on that link (will open a new window/tab) to check out the JSON data returned. There's a lot of data values in there, but for simplicity we'll be focusing on the following values:</p>
+<ul>
+<li>from_user</li>
+<li>text</li>
+<li>profile_image_url</li>
+</ul>
+<p>I'll expand the simple example app from my <a href="http://codehenge.net/blog/2011/05/customizing-android-listview-item-layout/">last post</a> to display twitter posts instead of a hard-coded list of users. The layout from the previous tutorial can be easily repurposed by changing the icon to the Twitter user's avatar, placing the twitter username in the "username" field, and placing the tweet in the message field. Our goal is something like:</p>
+<p><figure><img src='{{ site.baseurl }}assets/Screen-shot-2011-05-30-at-10.48.03-AM-191x300.png' alt='' width='191' height='300'/><figcaption></a></p></figcaption></figure><p>So how do we get there? Let's go through it, step by step. First, we edit the listitem.xml file to give the View components more helpful names/IDs:</p>
+{% highlight xml %}
+<?xml version="1.0" encoding="utf-8"?>
+<linearlayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_height="wrap_content" android:gravity="left|center" android:layout_width="wrap_content" android:paddingbottom="5px" android:paddingtop="5px" android:paddingleft="5px">
+  <imageview android:id="@+id/avatar" android:layout_width="wrap_content" android:layout_height="fill_parent" android:layout_marginright="6dip" android:src="@drawable/icon" />
+<linearlayout android:orientation="vertical" android:layout_width="0dip" android:layout_weight="1" android:layout_height="fill_parent">
+    <textview android:id="@+id/username" android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" />
+    <textview android:id="@+id/message" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginleft="10px" android:textcolor="#0099CC" />
+  </linearlayout>
+</linearlayout>
+{% endhighlight %}
+</div>
+<p>We can keep the main.xml from the previous post, since all we are changing is the layout within each item. Now we need some workhorse code to manage calling the Twitter API and formatting the return data for easy use. Let's wrap our returned tweets in a simple Tweet class:</p>
+{% highlight java %}
+public class Tweet {
+  public String username;
+  public String message;
+  public String image_url;
+  public Tweet(String username, String message, String url) {
+    this.username = username;
+    this.message = message;
+    this.image_url = url;
+  }
+}
+{% endhighlight %}</div>
+<p>I've also written a simple getTweets(searchTerm, page) method to generate the API call and process the return data into our Tweet objects. Here goes:</p>
+{% highlight java %}
+public ArrayList<Tweet> getTweets(String searchTerm, int page) {
+  String searchUrl =
+        "http://search.twitter.com/search.json?q=@"
+        + searchTerm + "&rpp=100&page=" + page;
+  ArrayList<tweet> tweets =
+        new ArrayList<tweet>();
+  HttpClient client = new  DefaultHttpClient();
+  HttpGet get = new HttpGet(searchUrl);
+  ResponseHandler<String> responseHandler =
+        new BasicResponseHandler();
+  String responseBody = null;
+  try {
+    responseBody = client.execute(get, responseHandler);
+  } catch(Exception ex) {
+    ex.printStackTrace();
+  }
+  JSONObject jsonObject = null;
+  JSONParser parser=new JSONParser();
+  try {
+    Object obj = parser.parse(responseBody);
+    jsonObject=(JSONObject)obj;
+  }catch(Exception ex){
+    Log.v("TEST","Exception: " + ex.getMessage());
+  }
+  JSONArray arr = null;
+  try {
+    Object j = jsonObject.get("results");
+    arr = (JSONArray)j;
+  } catch(Exception ex){
+    Log.v("TEST","Exception: " + ex.getMessage());
+  }
+  for(Object t : arr) {
+    Tweet tweet = new Tweet(
+      ((JSONObject)t).get("from_user").toString(),
+      ((JSONObject)t).get("text").toString(),
+      ((JSONObject)t).get("profile_image_url").toString()
+    );
+    tweets.add(tweet);
+  }
+  return tweets;
+}
+{% endhighlight %}</div>
+<p>The code above is using the <a href="http://code.google.com/p/json-simple/">json-simple library</a>, a nice lightweight tool for JSON encoding and decoding. I don't have time now, but I may do some demos/examples using json-simple in a later post if there is interest. Aside from exception handling, all the code above does is formats the Twitter search request url from the input parameters "searchTerm" and "page", makes an HTTP GET request using the generate url, parses the JSON return value, and stuffs the data into Tweet objects.</p>
+<p>Notice that the Twitter user avatar data (profile_image_url) returned is simply a url to the user's avatar. We need one more processing step to get the actual image, since Android ImageViews can't display an image directly from the web without downloading it. (good thing too, or offline usage would be quite dull!) Let's see how few lines we can do this in:</p>
+{% highlight java %}
+public Bitmap getBitmap(String bitmapUrl) {
+  try {
+    URL url = new URL(bitmapUrl);
+    return BitmapFactory.decodeStream(url.openConnection().getInputStream());
+  }
+  catch(Exception ex) {return null;}
+}
+{% endhighlight %}</div>
+<p>May not break any records, but the code above is fairly compact. It uses another handy Android API tool called the BitmapFactory. The BitmapFactory lives and breathes bitmaps, its sole purpose in life being to return a bitmap from whatever source data you give it. File, filestream, byte array, you name it. Because of this, I don't have to put any thought at all into bits, bytes, files, http requests, or anything else to accomplish this task. Rock on, BitmapFactory.</p>
+<p>Now we have all of the tools we need to refactor the ItemAdapter from last week's post to display our Tweet objects. Here we go:</p>
+{% highlight java %}
+public class TweetItemAdapter extends ArrayAdapter<tweet> {
+  private ArrayList<tweet> tweets;
+  public TweetItemAdapter(Context context, int textViewResourceId, ArrayList<tweet> tweets) {
+    super(context, textViewResourceId, tweets);
+    this.tweets = tweets;
+  }
+  @Override
+  public View getView(int position, View convertView, ViewGroup parent) {
+    View v = convertView;
+    if (v == null) {
+      LayoutInflater vi =
+         (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+      v = vi.inflate(R.layout.listitem, null);
+    }
+    Tweet tweet = tweets.get(position);
+    if (tweet != null) {
+      TextView username = (TextView) v.findViewById(R.id.username);
+      TextView message = (TextView) v.findViewById(R.id.message);
+      ImageView image = (ImageView) v.findViewById(R.id.avatar);
+      if (username != null) {
+        username.setText(tweet.username);
+      }
+      if(message != null) {
+        message.setText(tweet.message);
+      }
+      if(image != null) {
+        image.setImageBitmap(getBitmap(tweet.image_url));
+      }
+    }
+    return v;
+  }
+}
+{% endhighlight %}</div>
+<p>Not too many changes from the original, but the changes we have made are important. Let's go through them. No conceptual changes in the constructor, so I'll skip that. getView() is where the magic happens. Now, since we are setting the avatar image independently for each user, we are grabbing an ImageView object as well as two TextView objects from our View. Since we already parsed the Twitter JSON data in the getTweets() method and packaged it nicely into our Tweet objects, all we need to do here is put the extracted values from the relevant Tweet object into the text field for our TextView objects. For the ImageView, we need to set a bitmap value, which is exactly what we wrote the getBitmap(url) method to return. That's it!</p>
+<p>For the sake of completeness, here is the onCreate() method for this example - this illustrates setting the adapter and passing some data to the ListView as our app is launched.</p>
+{% highlight java %}
+@Override
+public void onCreate(Bundle savedInstanceState) {
+  super.onCreate(savedInstanceState);
+  setContentView(R.layout.main);
+  ArrayList<tweet> tweets = getTweets("android", 1);
+  ListView listView = (ListView) findViewById(R.id.ListViewId);
+  listView.setAdapter(new TweetItemAdapter(this, R.layout.listitem, tweets));
+}
+{% endhighlight %}
+</div>
+<p>For this example, we only ever get a single API call's worth of data, a limitation I will address in a follow-up tutorial. Let's take a screenshot of the finished product for posterity:</p>
+<p><figure><img src='{{ site.baseurl }}assets/Screen-shot-2011-05-30-at-11.38.04-AM-180x300.png' alt='' width='180' height='300'/><figcaption></a></p></figcaption></figure><p>There you have it: a working Twitter feed reader, based on the Twitter search API. There are plenty of directions you could take this code, from allowing the user to specify search terms to changing the way data is aggregated or adding some persistent data features. If these are the types of things you are interested in, I hope this tutorial helps! Feel free to leave a comment or drop me a line if you have any questions. As always, you can download code using the links at the bottom of this post to try things out for yourself.</p>
+<p>In my next post I'll continue working on this Twitter app to add user scrolling detection and auto-expansion of the ListView, so we can continually add to the ListView as the user scrolls through. This is a handy trick that can be useful in many scenarios. Stay tuned!</p>
+<p><a href="{{ site.baseurl }}assets/downloads/Example1.java">Example.java</a> <a href="{{ site.baseurl }}assets/downloads/listitem1.xml">listitem.xml</a> <a href="{{ site.baseurl }}assets/downloads/main1.xml">main.xml</a></p>
+<p><strong>Get 50% off my Node.js course <a href="http://www.udemy.com/learn-nodejs-by-example/?couponCode=codehenge">here</a></strong></p>
+<p>If you liked this article, help me out by sharing a 50% discount to my Node.js course here: <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://www.udemy.com/learn-nodejs-by-example/?couponCode=codehenge" data-text="Sign up for Learn Node.js by Example now and get 50% off!" data-via="AaronCois" data-size="large" data-hashtags="nodejs">Tweet</a> Thanks!</p>
+<p>You should follow me on Twitter here: <a href="https://twitter.com/AaronCois" class="twitter-follow-button" data-show-count="false" data-show-screen-name="false">Follow @AaronCois</a></p>

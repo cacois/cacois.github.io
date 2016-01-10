@@ -1,0 +1,240 @@
+---
+layout: post
+title: 'Android Development Tutorial: ProgressBar Example'
+date: 2011-06-24 20:25:08.000000000 -04:00
+type: post
+published: true
+status: publish
+categories:
+- Android
+- Open Source
+- Programming
+tags:
+- Android
+- Java
+- Programming
+- tutorial
+meta:
+  _networkpub_meta_published: new
+  _edit_last: '1'
+  _networkpub_meta_publish: '1'
+  _networkpub_meta_content: '0'
+  dsq_thread_id: '341620113'
+  _aioseop_title: 'Android Development Tutorial: ProgressBar Example'
+  _aioseop_keywords: android, tutorial, example, listview, bitmap, image, twitter,
+    progress bar, asynchronous, progressbar, ui
+  _aioseop_description: "The Android ProgressBar is a useful UI component that most
+    developers will quickly find need of.  Displaying progress, even an indeterminate
+    \"loading\" indicator, provides crucial feedback to a user, eliminating frustration
+    and confusion while your app is churning away in the background. \r\n\r\nToday
+    I'll demonstrate using an indeterminate ProgressBar within a ListView while loading
+    web content. I'll be modifying the TweetView project from my previous post. "
+  meta_description: "The Android ProgressBar is a useful UI component that most developers
+    will quickly find need of.  Displaying progress, even an indeterminate \"loading\"
+    indicator, provides crucial feedback to a user, eliminating frustration and confusion
+    while your app is churning away in the background. \r\n\r\nToday I'll demonstrate
+    using an indeterminate ProgressBar within a ListView while loading web content.
+    I'll be modifying the <a href=\"https://github.com/cacois/TweetView\">TweetView
+    project</a> from my previous <a href=\"http://codehenge.net/blog/2011/06/android-development-tutorial-asynchronous-lazy-loading-and-caching-of-listview-images/\">post</a>. "
+  meta_keywords: android, tutorial, example, listview, bitmap, image, twitter, progress
+    bar, asynchronous, progressbar, ui
+  _mcf_override: 'yes'
+  thumbnail: http://codehenge.net/blog/wp-content/uploads/2011/06/progressbar.jpg
+  featured_image: http://codehenge.net/blog/wp-content/uploads/2011/06/progressbar.jpg
+  _mcf_retweet: 'yes'
+  _mcf_facebook: 'yes'
+  _mcf_stumble: 'yes'
+  suf_thumbnail: http://codehenge.net/blog/wp-content/uploads/2011/06/progressbar.jpg
+  sponge: '1'
+  suf_featured_image: http://codehenge.net/blog/wp-content/uploads/2011/06/progressbar.jpg
+  suf_meta_description: "The Android ProgressBar is a useful UI component that most
+    developers will quickly find need of.  Displaying progress, even an indeterminate
+    \"loading\" indicator, provides crucial feedback to a user, eliminating frustration
+    and confusion while your app is churning away in the background. \r\n\r\nToday
+    I'll demonstrate using an indeterminate ProgressBar within a ListView while loading
+    web content. I'll be modifying the <a href=\"https://github.com/cacois/TweetView\">TweetView
+    project</a> from my previous <a href=\"http://codehenge.net/blog/2011/06/android-development-tutorial-asynchronous-lazy-loading-and-caching-of-listview-images/\">post</a>. "
+  suf_meta_keywords: android, tutorial, example, listview, bitmap, image, twitter,
+    progress bar, asynchronous, progressbar, ui
+author:
+  login: cacois
+  email: cacois@gmail.com
+  display_name: cacois
+  first_name: Constantine
+  last_name: Cois
+excerpt: "The Android ProgressBar is a useful UI component that most developers will
+  quickly find need of.  Displaying progress, even an indeterminate \"loading\" indicator,
+  provides crucial feedback to a user, eliminating frustration and confusion while
+  your app is churning away in the background. \r\n\r\nToday I'll demonstrate using
+  an indeterminate ProgressBar within a ListView while loading web content. I'll be
+  modifying the TweetView project from my previous post. "
+---
+</p>
+<p>The Android ProgressBar is a useful UI component that most developers will quickly find need of.  Displaying progress, even an indeterminate "loading" indicator, provides crucial feedback to a user, eliminating frustration and confusion while your app is churning away in the background. </p>
+<p>Today I'll demonstrate using an indeterminate ProgressBar within a ListView while loading web content. I'll be modifying the <a href="https://github.com/cacois/TweetView">TweetView project</a> from my previous <a href="http://codehenge.net/blog/2011/06/android-development-tutorial-asynchronous-lazy-loading-and-caching-of-listview-images/">post</a>.</p>
+<p>Note: You can find the full project with the ProgressBar feature in the "progress_bar" <a href="https://github.com/cacois/TweetView/tree/progress_bar">branch of the TweetView Github project</a>.</p>
+<p>Let's get started. Recall that the previous iteration of the TweetView app displayed a stock Android icon image by default while the Twitter avatars were loaded for each item in the ListView. Of course, this is not ideal, as it gives the user no indication of what is going on, and new images suddenly replacing the icon may be confusing. A better user experience would be to place a loading image in each ListView item until the proper avatar is retrieved and displayed. To avoid the complication of trying determine progress of an image download (especially since our avatar images are not very large, and will download fairly quickly), I'll use an indeterminate ProgressBar:</p>
+<p><figure><img src='{{ site.baseurl }}assets/singleprogressbar.jpg' alt='' width='102' height='80'/><figcaption></a></p></figcaption></figure><p><strong>Step 1: Insert a ProgressBar UI component into our listitem.xml layout file.</strong></p>
+<p>We'll put the ProgressBar element in the same spot we intend the avatar to occupy. This way, we can just set the visibility of the avatar ImageView to "gone" until the image is ready, and then switch the ImageView to "visible" and the ProgressBar to "gone" when we display the image. Here's the updated layout file:</p>
+{% highlight xml %}
+<?xml version="1.0" encoding="utf-8"?></p>
+<linearlayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_height="wrap_content" android:gravity="left|center" android:layout_width="wrap_content" android:paddingbottom="5px" android:paddingtop="5px" android:paddingleft="5px">
+<p>  <relativelayout android:layout_width="wrap_content" android:layout_height="fill_parent"><br />
+    <imageview android:id="@+id/avatar" android:layout_width="wrap_content" android:layout_height="fill_parent" android:layout_marginright="6dip" android:visibility="gone" /></p>
+<progressbar android:id="@+id/progress_bar" android:layout_width="wrap_content" android:layout_height="wrap_content" android:maxwidth="30dip" android:minwidth="30dip" android:maxheight="30dip" android:minheight="30dip" android:layout_marginright="6dip" android:indeterminate="true" />
+<linearlayout android:orientation="vertical" android:layout_width="0dip" android:layout_weight="1" android:layout_height="fill_parent">
+    <textview android:id="@+id/username" android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" /><br />
+    <textview android:id="@+id/message" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginleft="10px" android:textcolor="#0099CC" />
+  </linearlayout>
+</relativelayout></linearlayout>
+{% endhighlight %}
+<p>You'll see that i've added something more than a ProgressBar element: a RelativeLayout. If we don't set the ProgressBar's height to fill_parent, it will squish our list items vertically to match it's height. However, the ProgressBar element, unlike an ImageView, will stretch and distort if told to "fill_parent" in its layout_height or layout_width value. to avoid distortion of the indeterminate ProgressBar or the hiding of the text from our tweets, I've added the RelativeLayout to encapsulate ProgressBar and ImageView alike, providing the ability to stretch vertically and buffer our round ProgressBar with dead space. </p>
+<p>Note also that I've set the sizes of the ProgressBar to match the size of the avatars we download from Twitter. You will want to change these size settings as appropriate for your app. This, combined with the layout hack above, will make our tweet items have a consistent layout, whether we are displaying avatars or a ProgressBar.</p>
+<p><strong>Step 2: TweetImageAdapter and our ViewHolder class need to be altered to store the ProgressBar for each list item, and pass it to the ImageManager.displayImage() method so it can be made invisible when the correct image is displayed.</strong></p>
+<p>First we add a ProgressBar member to the ViewHolder class:</p>
+{% highlight java %}
+public static class ViewHolder {
+  public TextView username;
+  public TextView message;
+  public ImageView image;
+  public ProgressBar progress; //ADDED
+}
+{% endhighlight %}
+<p>Then we alter the tweetItemAdapter.getView() method to retrieve and pass along this ProgressBar object to the ImageManager through the displayImage() method:</p>
+{% highlight java %}
+@Override
+public View getView(int position, View convertView, ViewGroup parent) {
+  View v = convertView;
+  ViewHolder holder;
+  if (v == null) {
+    LayoutInflater vi = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    v = vi.inflate(R.layout.listitem, null);
+    holder = new ViewHolder();
+    holder.username = (TextView) v.findViewById(R.id.username);
+    holder.message = (TextView) v.findViewById(R.id.message);
+    holder.image = (ImageView) v.findViewById(R.id.avatar);
+    holder.progress = (ProgressBar) v.findViewById(R.id.progress_bar); //ADDED
+    v.setTag(holder);
+  }
+  else
+    holder=(ViewHolder)v.getTag();
+  final Tweet tweet = tweets.get(position);
+  if (tweet != null) {
+    holder.username.setText(tweet.username);
+    holder.message.setText(tweet.message);
+    holder.image.setTag(tweet.image_url);
+    imageManager.displayImage(tweet.image_url, activity,
+      holder.image, holder.progress); //CHANGED
+  }
+  return v;
+}
+{% endhighlight %}
+<p>Ok, now our ImageManager, the class responsible for updating the image displayed when an avatar has finished downloading, has access to the ProgressBar component as well as the ImageView. We're ready for the last step.</p>
+<div class="note" style="background-color:#f2f2e6;margin-top:50px;margin-bottom:50px">
+<div style="padding:5px;font-family: 'Times New Roman', Times, serif;text-align:center;margin: 0px auto;font-style:oblique;font-size:30px;">Learn Node.js by Example</div>
+<p style="padding:10px;font-family: 'Times New Roman', Times, serif;text-align:center;margin: 0px auto;font-size:18px;"> Take my online course featuring screencasts and sample projects!</p>
+<div class="signup_button">
+<a href="http://www.udemy.com/learn-nodejs-by-example/"><br />
+</a><br />
+<h3 style="color:#ffffff">Sign up now</h3>
+<p>30-day money back guarantee!</p>
+</div>
+</div>
+<p><strong>Step 3: Change the image display methods to manage visibility of the ImageView and ProgressBar list item components, as well as to set the appropriate source image for the ImageView. Recall that we had two methods capable of displaying an image, one that could do so immediately (if the image was found in our local cache) and one that operated asynchronously, displaying the image as soon as the background download process is complete. </strong></p>
+<p>The first method, displayImage(), can be altered like so:</p>
+{% highlight java %}
+public void displayImage(String url, Activity activity,
+  ImageView imageView, ProgressBar progressBar) {
+  if(imageMap.containsKey(url)) {
+    imageView.setImageBitmap(imageMap.get(url));
+    progressBar.setVisibility(View.GONE); //ADDED
+    imageView.setVisibility(View.VISIBLE); //ADDED
+  }
+  else {
+    queueImage(url, activity, imageView, progressBar);
+    imageView.setVisibility(View.GONE); //ADDED
+    progressBar.setVisibility(View.VISIBLE); //ADDED
+  }
+}
+{% endhighlight %}
+<p>Notice that the ProgressBar object is now being passed in, as designed in the last step. Using this, we are able to set visibility of the ImageView/ProgressBar UI elements (making sure only one is visible at any given time), depending on whether the image bitmap has been set or not.</p>
+<p>Additionally, we pass the progressBar object along into the queueImage method - more on that soon.</p>
+<p>The second place we need to add this visibility shuffle code is the run() method of the Runnable BitmapDisplayer class, which will be invoked on the UI thread, from the background thread, to set the image. Same basic changes - the BitmapDisplayer class now looks like:</p>
+{% highlight java %}
+//Used to display bitmap in the UI thread
+private class BitmapDisplayer implements Runnable {
+  Bitmap bitmap;
+  ImageView imageView;
+  ProgressBar progressBar;
+  public BitmapDisplayer(Bitmap b, ImageView i, ProgressBar p) {
+    bitmap = b;
+    imageView = i;
+    progressBar = p;
+  }
+  public void run() {
+    if(bitmap != null) {
+      imageView.setImageBitmap(bitmap);
+      progressBar.setVisibility(View.GONE); //ADDED
+      imageView.setVisibility(View.VISIBLE); //ADDED
+    }
+    else {
+      imageView.setVisibility(View.GONE); //ADDED
+      progressBar.setVisibility(View.VISIBLE); //ADDED
+    }
+  }
+}
+{% endhighlight %}
+<p>Step 5: Last, but not least, you'll notice above that the BitmapDisplayer object needs to have a ProgressBar object passed in as an input parameter. The BitmapDisplayer object in TweetView is populated by data from ImageRef objects, so ImageRef objects now need to contain this additional object. Let's take care of that, and while we are at it, change the ImageQueueManager run() method to get the BitmapDisplayer the updated input parameters that it needs:</p>
+{% highlight java %}
+private class ImageRef {
+  public String url;
+  public ImageView imageView;
+  public ProgressBar progressBar;
+  public ImageRef(String u, ImageView i, ProgressBar p) {
+    url = u;
+    imageView = i;
+    progressBar = p;
+  }
+}
+private class ImageQueueManager implements Runnable {
+  @Override
+  public void run() {
+    try {
+      while(true) {
+        // Thread waits until there are images in the
+        // queue to be retrieved
+        if(imageQueue.imageRefs.size() == 0) {
+          synchronized(imageQueue.imageRefs) {
+            imageQueue.imageRefs.wait();
+          }
+        }
+        // When we have images to be loaded
+        if(imageQueue.imageRefs.size() != 0) {
+          ImageRef imageToLoad;
+          synchronized(imageQueue.imageRefs) {
+            imageToLoad = imageQueue.imageRefs.pop();
+          }
+          Bitmap bmp = getBitmap(imageToLoad.url);
+          imageMap.put(imageToLoad.url, bmp);
+          Object tag = imageToLoad.imageView.getTag();
+          // Make sure we have the right view - thread safety defender
+          if(tag != null && ((String)tag).equals(imageToLoad.url)) {
+            BitmapDisplayer bmpDisplayer =
+              new BitmapDisplayer(bmp, imageToLoad.imageView,
+                imageToLoad.progressBar);
+            Activity a =
+              (Activity)imageToLoad.imageView.getContext();
+            a.runOnUiThread(bmpDisplayer);
+          }
+        }
+        if(Thread.interrupted())
+          break;
+      }
+    } catch (InterruptedException e) {}
+  }
+}
+{% endhighlight %}
+<p>All done!  Now we will see a lovely perpetually spinning progress wheel, sure to delight users while they wait for Twitter avatars to be downloaded. Best of all, through some simple layout modifications, we should see no distortion or inconsistency in our item layouts, leading to a pleasant user experience.</p>
+<p>I've created a new branch of the TweetView Github project containing these modifications. You can find it here: <a href="https://github.com/cacois/TweetView/tree/progress_bar">progress_bar branch</a>.  Just switch to this branch to see this version of the app.</p>
+<p>As always, comments or questions are very welcome. Happy coding!</p></p>
+<p><small><small><small>Technorati code: 7ESRQSJMX8BM</small></small></small></p>

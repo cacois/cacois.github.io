@@ -1,0 +1,208 @@
+---
+layout: post
+title: Getting Started With node.js and socket.io - Part 2
+date: 2011-05-01 10:08:22.000000000 -04:00
+type: post
+published: true
+status: publish
+categories:
+- Open Source
+- Programming
+- Technology
+tags:
+- html
+- javascript
+- node.js
+- Programming
+- socket.io
+- web
+meta:
+  _networkpub_meta_published: new
+  _edit_last: '1'
+  dsq_thread_id: '309749715'
+  _networkpub_meta_publish: '1'
+  _networkpub_meta_content: '0'
+  _aioseop_description: 'In my <a title="Getting Started with node.js and socket.io
+    - Part 1" href="http://codehenge.net/blog/2011/04/getting-started-with-node-js-and-socket-io-part-1/">last
+    post</a> I went through installation and setup of some great new tools: node.js
+    and socket.io. Now that we have node and socket.io installed, its time to play
+    around a bit to understand how to use these new toys. In this post I''ll be writing
+    a simple http server and some client-side html/javascript to go with it. '
+  _aioseop_title: Getting Started With node.js and socket.io - Part 2
+  thumbnail: http://static.bagcheck.org/e978f11a641cd2e9786512d3278047224217be82_300x300.jpg
+  featured_image: http://static.bagcheck.org/e978f11a641cd2e9786512d3278047224217be82_300x300.jpg
+  suf_magazine_headline: 'on'
+  suf_magazine_excerpt: 'on'
+  meta_description: This is the second post in my two-part tutorial on using node.js
+    and socket.io. In this post I create a simple http server, step by step, as an
+    example application to show off these tools. In the end, the reader following
+    along should have a functioning http server, and understand both the server and
+    client side programming necessary to leverage socket.io and node.js for asynchronous,
+    real-time communication within web applications.
+  meta_keywords: socket.io, node.js, javascript, programming, development, code, example,
+    tutorial
+  suf_thumbnail: http://static.bagcheck.org/e978f11a641cd2e9786512d3278047224217be82_300x300.jpg
+  suf_featured_image: http://static.bagcheck.org/e978f11a641cd2e9786512d3278047224217be82_300x300.jpg
+  suf_meta_description: This is the second post in my two-part tutorial on using node.js
+    and socket.io. In this post I create a simple http server, step by step, as an
+    example application to show off these tools. In the end, the reader following
+    along should have a functioning http server, and understand both the server and
+    client side programming necessary to leverage socket.io and node.js for asynchronous,
+    real-time communication within web applications.
+  suf_meta_keywords: socket.io, node.js, javascript, programming, development, code,
+    example, tutorial
+  sponge: '1'
+  _aioseop_keywords: socket.io, node.js, javascript, programming, development, code,
+    example, tutorial
+author:
+  login: cacois
+  email: cacois@gmail.com
+  display_name: cacois
+  first_name: Constantine
+  last_name: Cois
+excerpt: 'In my last post I went through installation and setup of some great new
+  tools: node.js and socket.io. Now that we have node and socket.io installed, its
+  time to play around a bit to understand how to use these new toys. In this post
+  I''ll be writing a simple http server and some client-side html/javascript to go
+  with it. '
+---
+<div class="note">
+  <strong>Deprecation Notice: Socket.io is now at version v0.7+. The content in this tutorial applies only to Socket.io v0.6. If you are using Socket.io v0.7 or above, see <a href="http://codehenge.net/blog/2011/12/getting-started-with-node-js-and-socket-io-v0-7-part-2/">this version</a> of the tutorial.</strong>
+</div>
+<div style="float: left; margin: 0 10px 5px 0;">
+<p><figure><img src='{{ site.baseurl }}assets/e978f11a641cd2e9786512d3278047224217be82_300x300.jpg' alt='' width='250' height='250'/><figcaption></figcaption></figure></div>
+<p>In my <a href="http://codehenge.net/blog/2011/04/getting-started-with-node-js-and-socket-io-part-1/" title="Getting Started with node.js and socket.io - Part 1">last post</a> I went through installation and setup of some great new tools: node.js and socket.io. Now that we have node and socket.io installed, its time to play around a bit to understand how to use these new toys. In this post I'll be writing a simple http server and some client-side html/javascript to go with it. (Note: I'm assuming readers have a basic understanding of html and javascript)</p>
+
+<p>My goal here is to go step by step, to see each piece fit together. People more experienced with client/server programming concepts may want to skim a little. You can also download the test code created here as files at the bottom of the post.</p>
+<p>As a sanity check, make sure node is installed and in your path by typing</p>
+{% highlight bash %}
+node -v
+{% endhighlight %}
+<p>You should see something like</p>
+<p><figure><img src='{{ site.baseurl }}assets/Screen-shot-2011-04-29-at-11.37.30-PM.png' alt='' width='500' height='28'/><figcaption>   </p></figcaption></figure><p>Now we're ready to write some code. Let's start with the server. Navigate to the directory you want to test out of, and make a file called server_test.js for your test server:  </p>
+{% highlight bash %}
+touch server_test.js
+{% endhighlight %}
+<p>Open this file in your favorite text editor. Start by defining some variables at the top:  </p>
+{% highlight javascript %}
+var http = require('http'),
+url = require('url'),
+io = require('/usr/local/lib/node/socket.io'),
+server;
+{% endhighlight %}
+<p>We're only including the bare essentials here, enough to start our server, receive requests, and use socket.io (we won't even use socket.io yet, but we'll get to that soon). Now let's define the server  </p>
+{% highlight javascript %}
+server = http.createServer(function(req, res){
+  // server code
+  var path = url.parse(req.url).pathname;
+  switch (path) {
+    case '/':
+      res.writeHead(200, {'Content-Type': 'text/html'});
+      res.write('Hello!\n');
+      res.end();
+      break;
+    default: send404(res);
+  }
+}),
+
+send404 = function(res){
+  res.writeHead(404);
+  res.write('404');
+  res.end();
+};
+
+server.listen(8080);
+{% endhighlight %}
+<p>Ok, check out the block of code. We are creating an http server object by instantiating that server variable we defined above using the http library. We are then defining its behavior by parsing any urls it receives and throwing the path of the url into a switch/case statement. Notice that we could define this behavior based on anything we wanted, not necessarily the url path. Here we have just defined a case for path '/', so our server will only respond to requests to the root path. For these requests, it will send "Hello!" back to the client. For all requests to other paths, we have defined the send404 function, which will return 404 to the client. We will add more path handling as we go on.</p>
+<p>Finally, we have told our server to listen on port 8080. Now, fire up the server!  </p>
+{% highlight bash %}
+node server_test.js
+{% endhighlight %}
+<p><strong>Want to master Node.js?</strong> Try my highly-rated online course <a href="http://www.udemy.com/learn-nodejs-by-example/" title="Learn Node.js by Example">Learn Node.js by Example</a>. <a href="http://www.udemy.com/learn-nodejs-by-example/?couponCode=codehenge">Click here</a> to get 50% off on screencasts, interactive projects, and more!</p>
+<p>You won't see any output in the server terminal window, but the server is now running. Bring up a second terminal window to issue some requests to test the server. In a second command window, send a root request to the server with</p>
+{% highlight bash %}
+curl localhost:8080
+{% endhighlight %}
+<p>You should get a response similar to:</p>
+<p><figure><img src='{{ site.baseurl }}assets/Screen-shot-2011-05-01-at-9.55.45-AM.png' alt='' width='500' height='29'/><figcaption></a>  </p></figcaption></figure><p>I'm using this snazzy blue terminal window for client-side commands, and sticking with green-on-black window for server output. Now we know our server can respond. Huzzah! Celebrate as necessary, and then its time to move on to bigger and better things. This server doesn't do much, and our client is just a command line. Let's start by adding some functionality to our server, courtesy of socket.io.</p>
+{% highlight javascript %}
+var http = require('http'),
+url = require('url'),
+fs = require('fs'),
+io = require('/usr/local/lib/node/socket.io'),
+server;
+
+server = http.createServer(function(req, res){
+  // your normal server code
+  var path = url.parse(req.url).pathname;
+
+  switch (path) {
+    case '/':
+      res.writeHead(200, {'Content-Type': 'text/html'});
+      res.write('&amp;lt;h1>Hello! Try the <a href="/socket-io_test.html">Socket.io Test</a></h1>');
+      res.end();
+      break;
+    case '/socket-io-test.html':
+      fs.readFile(__dirname + path, function(err, data) {
+        if (err) return send404(res);
+        res.writeHead(200, {'Content-Type': path == 'json.js' ? 'text/javascript' : 'text/html'})
+        res.write(data, 'utf8');
+        res.end();
+      });
+      break;
+    default: send404(res);
+  }
+}),
+
+send404 = function(res) {
+  res.writeHead(404);
+  res.write('404');
+  res.end();
+};
+
+server.listen(8080);
+
+// socket.io, I choose you
+var io = io.listen(server);
+io.on('connection', function(client){
+  // now we have a client object!
+  console.log("Connection accepted.");
+  client.on('message', function(message){
+    console.log("Recieved message: " + message + " - from client " + client.sessionId);
+  });
+  client.on('disconnect', function(){
+    console.log("Connected " + client.sessionId + "terminated.");
+  });
+});
+{% endhighlight %}
+<p>We've added quite a few things here, let's take stock. First, I've required the fs library, to access to some file I/O functions. I've also changed the response values to html, since this is an http server, after all. I've also created a path for a socket-io-test.html page, which I'll create next, and put a link to that page in the response for the root path.</p>
+<p>Most importantly, I've added some socket.io code, which you can see at the bottom of the page. First, we tell socket.io to listen to our server object. Now it has access to all traffic coming over that server, and can perform tasks based on it. Then I just tell socket.io what to do for the various events it will encounter: 'connection', 'message', and 'disconnect'. In this case, I'm just going to have it send some output to the console logs that we can follow. Clean and simple, right? That's the beauty of socket.io. Now I have to write that client socket-io-test.html page I've lead everyone to believe exists. Ok, I can man up. Here goes:</p>
+{% highlight html %}
+<h1>Socket.io Test</h1>
+<div>
+  <p id="status">Waiting for input</p>
+</div>
+
+<button id="connect" onclick="connect()">Connect</button>
+<button id="disconnect" onclick="disconnect()">Disconnect</button>
+<button id="send" onclick="send()">Send Message</button>
+{% endhighlight %}
+<p>Take a look at the html/javascript above. First, on the html side, we just have three buttons and a div. These will perform standard actions from client to server. The div is for displaying status from our socket.io object. In javascript, we've defined a client-side socket.io object, which looks like:</p>
+{% highlight javascript %}
+new io.Socket(host, [options]);
+{% endhighlight %}
+<p>Since we are using localhost, we pass in null for the host parameter. We could also pass in 'localhost' to achieve the same effect. We then define behaviors of the socket object using</p>
+{% highlight javascript %}
+socket.on(action, function() )
+{% endhighlight %}
+<p>For example,</p>
+{% highlight javascript %}
+socket.on('connect', function(){ status_update("Connected"); });
+{% endhighlight %}
+<p>which calls our status_update javascript function when the socket connects. Ok, time for a test. Start your node server again, to get all of the changes we made (shut it down if it was still running, then restart). Check the server command line - since we now have socket.io running on the server, startup output should look something like</p>
+<p><figure><img src='{{ site.baseurl }}assets/Screen-shot-2011-05-01-at-9.18.51-AM.png' alt='' width='500' height='75'/><figcaption></a>  </p></figcaption></figure><p>Open up a browser and go to <a href="http://localhost:8080">http://localhost:8080</a>.  You will see</p>
+<p><figure><img src='{{ site.baseurl }}assets/Screen-shot-2011-05-01-at-9.50.23-AM.png' alt='' width='412' height='57'/><figcaption></a></p></figcaption></figure><p>Theres the link we added to the root path server response of the server - click it to go to the socket.io test page we just finished. You should see:</p>
+<p><figure><img src='{{ site.baseurl }}assets/Screen-shot-2011-05-01-at-9.25.59-AM.png' alt='' width='289' height='161'/><figcaption></a>  </p></figcaption></figure><p>Now click the Connect button. You will see "Waiting for input" change to "Connected", meaning our socket.on('connect') function was invoked. Go back to the server terminal window:</p>
+<p><figure><img src='{{ site.baseurl }}assets/Screen-shot-2011-05-01-at-9.28.40-AM.png' alt='' width='500' height='45'/><figcaption></a>   We can see that the connection was initiated via websocket, and the server has assigned me a client session id. Since its socket.io, the connection could have been initiated via nay number of technologies, depending on my browser and network situation. Go ahead and try out the Disconnect and Send Message buttons as well, which will also show output on the server</p></figcaption></figure><p><figure><img src='{{ site.baseurl }}assets/Screen-shot-2011-05-01-at-9.31.22-AM.png' alt='' width='500' height='84'/><figcaption></a>   The above output is the result of disconnecting our initial session, connecting again (note the new client session id), and sending a message of "Hello Server!".</p></figcaption></figure><p>That's it! Now you have a working socket.io server and a client page to interact with it. We've gone through the basics of client/server communication, and you should be able to expand this example code into something much more functional with a little javascript.  </p>
+<p>Download Files:</p>
+<p><a href="{{ site.baseurl }}assets/downloads/socket-io-demo.zip">socket-io-demo.zip</a></p>

@@ -1,0 +1,50 @@
+---
+layout: post
+title: Don't Take Your Users To School
+date: 2010-11-14 19:34:32.000000000 -05:00
+type: post
+published: true
+status: publish
+categories:
+- Image Analysis
+- Research
+tags:
+- image analysis
+- imaging
+- research
+meta:
+  _edit_last: '1'
+  _wp_old_slug: ''
+  dsq_thread_id: '311480798'
+author:
+  login: cacois
+  email: cacois@gmail.com
+  display_name: cacois
+  first_name: Constantine
+  last_name: Cois
+excerpt: In 2003, I started my journey towards a PhD. My research focused on medical
+  image analysis, putting my software engineering skills to use in the field of Biomedical
+  Engineering. I began working on the problem of 3D image segmentation...
+---
+<div>In 2003, I started my journey towards a PhD. My research focused on medical image analysis, putting my software engineering skills to use in the field of Biomedical Engineering. I began working on the problem of 3D image segmentation, which is the act of computationally identifying and extracting an object within a 3D image, such as a CT or MRI scan. This allows doctors and researchers to analyze the shape or volume of a particular anatomic structure, which can be very useful for diagnosis, but segmenting objects in a 3D image is an incredibly long and tedious process that can only be performed by someone with significant medical/anatomical expertise. By 2006 I had developed a new software framework for automated image analysis, and had used it to create an algorithm for segmentation of cardiac structures in 3D images. This work would eventually become my dissertation.</p>
+<p><figure><img src='{{ site.baseurl }}assets/CT_AAA_overlay-300x300.jpg' alt='' width='300' height='300'/><figcaption></a></figcaption></figure><p>I proceeded to gather image data from clinical collaborators and test my system. It outperformed the current state of the art, and left a lot more room for optimization and innovation in algorithm design than other techniques. It was a success! In the process of testing my system against independently-developed rival systems, I realized how difficult it was, even for researchers in the field, to understand all of the parameters and settings needed to maximize performance from the various software systems designed for automated segmentation (maximizing their performance was very important to me, as I wanted no room for argument if my system outperformed them). I had to study the algorithms themselves, to see how the parameters affected the mathematics of the algorithm. I was getting my PhD in the field; I had a M.S. in Computer Science, with a focus on machine learning; I knew the theory, algorithms, statistics, and math...and it was still difficult for me to be sure I was using these systems effectively. Disheartened, I had to admit that this same problem was present in my own system. I had designed it, so of course I knew every trick and nuance...but anyone else picking it up would suffer from utter confusion in trying to use the system as effectively as possible. And they wouldn't have the kind of time or motivation I had to figure it out. My target users were medical professionals - radiologists, imaging technicians, etc - busy people who continually study to keep on top of their field, and have no time to learn differential equations, high-level statistics, or any other domains in order to set parameters in my system to accurately segment their data. Their only goal was treating patients. They needed results, and would dismiss any tool that did not produce them easily and consistently. This was why much of the research produced in the medical image analysis field since the 1970’s went largely unused in clinical practice - its usability for the target demographic approached zero.</p>
+<p>I remember clearly the crushing defeat I felt at this realization. I had spent years creating software that did its job better than any existing tool. It would get published, be used by a few researchers who needed segmentations for shape analysis or some other application, but ultimately make little direct impact on the medical field. I couldn’t stand it. Not the fact that my mark would be small - most PhD dissertations leave a small direct footprint. What bothered me was that I was an engineer, and had designed the system, consulted with clinicians on their data and needs, and never considered usability to that demographic...I had arrogantly adopted a mantra heard far too often: Users will use software if it performs well. I was wrong, and the worst part was I was not alone. This was the culture of my research field - usability and user experience were not words in our lexicon, and the tools we designed were largely academic exercises meant to further knowledge in the field without having a major impact on clinical medicine until some technique was picked up by GE, Philips, or Siemens and incorporated into their clinical technologies. I was an academic, but I was also an engineer; my ultimate goal was to produce something useful to the medical field. As a scientist I had succeeded, but as an engineer, in my mind, I had failed.</p>
+<p>So I doubled back. I looked at my algorithms, at my framework. I looked at every parameter in the system. I ran simulations, and studied performance of the system using a wide range of parameters. I studied the trends of performance across parameter spaces when operating on different types of images. I determined which parameters had the greatest impact on performance, which needed to be tuned specifically for each set of input data, and which could be set to standard values without decreasing performance. I wrote code to run large parameter optimization studies.</p>
+<p><figure><img src='{{ site.baseurl }}assets/example_DSC_curve_bone-300x225.png' alt='' width='300' height='225'/><figcaption></a></figcaption></figure><p>My goal was automated segmentation of 3D images (2D is pretty fast for a human to do, and provides less useful data), which are used as input to shape, surface, or volumetric analysis. However, a single segmentation of a 3D image using my system took 2-3 hours (this has been improved significantly since with advances in computing), so no processes that required actual segmentation to determine optimal parameters were possible if the system was to remain a potentially useful tool for timely diagnosis. My analyses had shown that optimal parameters varied significantly between data sets, due to changes in anatomy and data collection methods beyond my control. I needed to optimize parameters for each input image, and the only source of data I had available was the user. But asking the user to set these parameters was, as previously discussed, a terrible mistake.</p>
+<p>It dawned on me that one of the advantages of my framework (and the <a title="Insight Toolkit" href="http://www.itk.org" target="_blank">Insight Toolkit</a>, on which it was built) is that it was able to analyze data of any dimensionality (2D, 3D, ..., n-D) without changes to the code. I discovered that I could take a 2D slice from a 3D image, ask a user to trace the target object in the slice (takes only 5-10 seconds), and use that gold standard to train the system for the particular 3D image at hand. Parameters good at segmenting a 2D slice from an image, it turned out, are also pretty good at segmenting the entire 3D image when using my algorithm.</p>
+<p>I redesigned my interface and workflow, simplifying user interaction to 3 steps:</p>
+<ol>
+<li>load a 3D image</li>
+<li>trace the object in a single 2D slice (providing the seed for training)</li>
+<li>click ‘Go’</li>
+</ol>
+<p>When I went on to write my dissertation, I ended up devoting large sections to parameter optimization procedures, the concept of using 2D tracings to train a system for automated 3D segmentation, and usability in medical image analysis software. I believe these sections are among the strongest in the work, and most clearly set me apart from other research in the field. Opening my eyes to usability and user experience had not only made my system accessible to users, it had improved my research immeasurably, and forced me to innovate in new and exciting ways - it had elevated my dissertation beyond my expectations.</p>
+<p>The lessons learned from this experience have guided my work ever since, in both academia and industry:</p>
+<ul>
+<li>Focus on the user;</li>
+<li>Go to them, don’t expect them to come to you;</li>
+<li>Don’t expect your user to learn or study in order to use your tools</li>
+</ul>
+</div>
+<div></div>
+<div>These are powerful lessons, constantly ignored in software development. Just because you understand it doesn't mean users will. Spend time minimizing the learning curve of your software. It is very easy to assume that users will adapt themselves to use a superior product - that they will perceive the long term value. But upfront cost is highly weighted in a potential user’s value proposition, and if the learning curve is too great, developers may find themselves scratching their heads at the lack of interest in their target demographic.</div>

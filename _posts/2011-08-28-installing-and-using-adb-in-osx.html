@@ -1,0 +1,101 @@
+---
+layout: post
+title: Installing and Using ADB in OSX
+date: 2011-08-28 23:34:40.000000000 -04:00
+type: post
+published: true
+status: publish
+categories:
+- Android
+- Programming
+tags:
+- adb
+- Android
+- development
+- Programming
+meta:
+  _edit_last: '1'
+  _networkpub_meta_published: new
+  _networkpub_meta_publish: '0'
+  _networkpub_meta_content: '0'
+  thumbnail: http://codehenge.net/blog/wp-content/uploads/2011/08/android_vector_200_150.jpg
+  featured_image: http://codehenge.net/blog/wp-content/uploads/2011/08/android_vector_200_150.jpg
+  _aioseop_title: Installing and Using ADB in OSX
+  _aioseop_description: Android Debug Bridge (ADB) is a versatile command line tool
+    that lets you communicate with an emulator instance or connected Android-powered
+    device. You can use ADB to transfer files, install apps, access bug reports, or
+    access the shell of your Android device remotely, and that's just the beginning!
+    In this guide, I'm going to show you how to install and use ADB.
+  _aioseop_keywords: android, debug, adb, development, tools, guide
+  meta_description: Android Debug Bridge (ADB) is a versatile command line tool that
+    lets you communicate with an emulator instance or connected Android-powered device.
+    You can use ADB to transfer files, install apps, access bug reports, or access
+    the shell of your Android device remotely, and that's just the beginning! In this
+    guide, I'm going to show you how to install and use ADB.
+  meta_keywords: android, debug, adb, development, tools, guide
+  dsq_thread_id: '398603736'
+author:
+  login: cacois
+  email: cacois@gmail.com
+  display_name: cacois
+  first_name: Constantine
+  last_name: Cois
+excerpt: Android Debug Bridge (ADB) is a versatile command line tool that lets you
+  communicate with an emulator instance or connected Android-powered device. You can
+  use ADB to transfer files, install apps, access bug reports, or access the shell
+  of your Android device remotely, and that's just the beginning! In this guide, I'm
+  going to show you how to install and use ADB.
+---
+<p><figure><img src='{{ site.baseurl }}assets/android_vector_200_150-150x150.jpg' alt='' width='150' height='150'/><figcaption></a><a href="http://developer.android.com/guide/developing/tools/adb.html">Android Debug Bridge (ADB)</a> is, according to the Android developer documentation, "a versatile command line tool that lets you communicate with an emulator instance or connected Android-powered device". In short, ADB allows you to effectively and easily communicate with an Android device or emulator from your computer. You can use ADB to transfer files, install apps, access bug reports, or access the shell of your Android device remotely, and that's just the beginning!  ADB is a fundamental tool in the Android developer's toolkit, and learning to use it will save you a ton of time and trouble.</p></figcaption></figure><p>In this guide, I'm going to show you how to install and use ADB.</p>
+<p>Step 1: If you haven't already, download the <a href="http://developer.android.com/sdk/index.html">Android SDK for OSX</a>. The most recent one should be fine.  Unzip the file, and move the unzipped folder to wherever you like. Where you put it doesn't much matter, but you have to remember where it is so you can reference the libraries whenever you need to.</p>
+<p>/Developer/SDKs/ seems like a cozy spot.</p>
+<p>Step 2: Navigate into the unzipped /android-sdk-mac_x86/tools directory and launch the Android SDK Manager application by double-clicking on the executable file entitled "android" or typing </p>
+{% highlight bash %}
+./android<br />
+{% endhighlight %}
+<p>in the terminal. You should get an application window similar to this:</p>
+<p><center><br />
+<p><figure><img src='{{ site.baseurl }}assets/android_manager1.png' alt='' width='500' height='303'/><figcaption></a><br</figcaption></figure></center><br />
+Once the application has launched, select <em>Installed Packages</em> on the left-hand side menu, and check the box beside <em>Android SDK Platform-tools, revision <#></em>. This is the package that includes ADB, along with some other useful tools.</p>
+<p>Click the <em>Install Selected</em> button, and wait while everything is installed. </p>
+<p>Step 3: Now ADB is installed, and you are ready to use it to interface with your Android device! Let's test it. Close your terminal window and open a brand new one, just to be safe. Now type</p>
+{% highlight bash %}
+adb devices<br />
+{% endhighlight %}
+<p>You should see the output:</p>
+{% highlight bash %}
+List of devices attached<br />
+{% endhighlight %}
+<p>Of course, ADB sees no devices because none are connected to your computer! Lets fix that. Grab your Android device, and bring up the Settings menu. Go to Settings->Development and make sure the 'USB Debugging' option is checked. Now plug your Android device into a USB port on your computer. Now try </p>
+{% highlight bash %}
+adb devices<br />
+{% endhighlight %}
+<p>again. You should see:</p>
+{% highlight bash %}
+List of devices attached<br />
+XXXXXXXXXXXXX device<br />
+{% endhighlight %}
+<p>Congratulations, ADB is installed and working! That number is the unique ID of your device. You can just type</p>
+{% highlight bash %}
+adb shell<br />
+{% endhighlight %}
+<p>to get an ADB shell terminal into your device, and run some commands. </p>
+<p>One of my personal favorite features of ADB is the ability to easily push files from your computer onto your device, without even having to open up an ADB shell. From your computer terminal use the command</p>
+{% highlight bash %}
+adb push <source filepath> <destination filepath on device><br />
+</destination></source>
+{% endhighlight %}
+<p>It's that easy!</p>
+<p>Other useful commands include</p>
+{% highlight bash %}
+adb install
+<path_to_apk>
+</path_to_apk>{% endhighlight %}
+<p>to install an app, and</p>
+{% highlight bash %}
+adb forward tcp:
+<port_num> tcp:
+<port_num>
+</port_num></port_num>{% endhighlight %}
+<p>to set up arbitrary port forwarding.</p>
+<p>See the <a href="http://developer.android.com/guide/developing/tools/adb.html">developer documentation</a> for a full list of the ADB commands. </p>

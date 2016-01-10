@@ -1,0 +1,35 @@
+---
+layout: post
+title: Announcing CHService, a new open source Windows service framework!
+date: 2010-08-08 23:35:15.000000000 -04:00
+type: post
+published: true
+status: publish
+categories:
+- Open Source
+- Programming
+tags:
+- CHService
+- Open Source
+- Programming
+- Software
+meta:
+  _edit_last: '1'
+  _wp_old_slug: ''
+  dsq_thread_id: '329224966'
+  _wp_rp_extracted_image_url: ''
+author:
+  login: cacois
+  email: cacois@gmail.com
+  display_name: cacois
+  first_name: Constantine
+  last_name: Cois
+excerpt: "I'm pleased to announce that CHService v1.0 has just been published at Github!\r\n\r\nCHService
+  is a small open source project, born out of my irritation at writing essentially
+  the same Windows Service over and over. "
+---
+<p>I'm pleased to announce that CHService v1.0 has just been published at <a href="http://github.com/cacois/CHService" target="_self">Github</a>!</p>
+<p>CHService is a small open source project, born out of my irritation at writing essentially the same Windows Service over and over. Standard service types in my applications included services that fired a particular method every x minutes (facilitating cleanup or DB synchronization, usually) and services that listened on ports for signals, or to respond to communications. Each time I was forced to rewrite the same basic code to facilitate threading, service stoppage, tcp listeners, timing loops, etc. With CHService, I have made a new windows service base class that loads and runs any number of worker classes, configurable in an app.config file. I have pushed all of the common functionality into worker base classes, so that a timed method worker, for example, can be created by merely inheriting the TimedWorkerBase class and overloading the Fire() method with the operation to perform each time the service fires. The second worker base class currently included creates a worker that listens on a specified port for communication, requiring only an overload of the AcceptSocket() method.</p>
+<p>Many varied types of worker processes can be added to a single CHService project. The set of workers to be invoked can be configured in the app.config file of a CHService project, parsed at run-time using reflection in an effort to make service configuration and repurposing as simple and seamless as possible.</p>
+<p>The project is currently small, but includes the necessary base classes, an example windows service project created using the framework, and a small unit test project for demonstration.</p>
+<p>I would greatly appreciate any feedback or thoughts on the project, which I hope will be of use to some of you out there.</p>

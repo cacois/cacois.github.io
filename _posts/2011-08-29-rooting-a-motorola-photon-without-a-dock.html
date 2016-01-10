@@ -1,0 +1,116 @@
+---
+layout: post
+title: Rooting a Motorola Photon Without a Dock
+date: 2011-08-29 20:09:33.000000000 -04:00
+type: post
+published: true
+status: publish
+categories:
+- Android
+tags: []
+meta:
+  _networkpub_meta_published: new
+  _edit_last: '1'
+  _networkpub_meta_publish: '1'
+  _networkpub_meta_content: '0'
+  thumbnail: http://codehenge.net/blog/wp-content/uploads/2011/08/android-root.gif
+  featured_image: http://codehenge.net/blog/wp-content/uploads/2011/08/android-root.gif
+  _aioseop_title: Rooting a Motorola Photon Without a Dock
+  _aioseop_description: A clear step-by-step guide to rooting a Motorola Photon using
+    a method that does not require a web dock, or any other accessories. Includes
+    detailed instructions for points of common confusion.
+  meta_description: A clear step-by-step guide to rooting a Motorola Photon using
+    a method that does not require a web dock, or any other accessories. Includes
+    detailed instructions for points of common confusion.
+  meta_keywords: android, motorola, photon, root
+  _aioseop_keywords: android, motorola, photon, root
+  dsq_thread_id: '399475475'
+author:
+  login: cacois
+  email: cacois@gmail.com
+  display_name: cacois
+  first_name: Constantine
+  last_name: Cois
+excerpt: A clear step-by-step guide to rooting a Motorola Photon using a method that
+  does not require a web dock, or any other accessories. Includes detailed instructions
+  for points of common confusion.
+---
+<p><figure><img src='{{ site.baseurl }}assets/android-root.gif' alt='' width='250' height='250'/><figcaption></a></p></figcaption></figure><p>While the first methods to gain root access to the Android-powered Motorola Photon required an expensive webtop dock, we were soon provided an easy, dock-less <a href="http://forum.xda-developers.com/showthread.php?t=1216131">method</a> for rooting by the incomparable Edgan at xda-developers. For those not yet battle-hardened by Android rooting attempts, I'm providing a clear step-by-step guide to rooting a Motorola Photon, with detailed instructions for points of common confusion.</p>
+<p>Note: I'm using OSX in this guide, but there aren't any significant differences when using other operating systems.</p>
+<p>First, let's get some tools set up on your Photon. </p>
+<p>Install two apps from the Android Marketplace:</p>
+<ul>
+<li><a href="https://market.android.com/details?id=com.noshufou.android.su&feature=search_result">Superuser</a></li>
+<li><a href="https://market.android.com/details?id=jackpal.androidterm&feature=search_result">Android Terminal Emulator</a></li>
+</ul>
+<p>Superuser won't be of much use until you have root access, but you can fire up the Android Terminal Emulator right now if you want to see what it does. It basically gives you a linux prompt on your Android device, allowing you to issue standard linux commands to the underlying operating system. We'll use this to test our root access when we are finished.</p>
+<p>The first thing we need to do is get the file <a href="http://cdn.multidownld.com/files/get/C6BA2NeyY9/photon-torpedo.tar"> photon-torpedo.tar</a> onto your Photon's internal memory. In my opinion, the easiest way of doing this is using my old friend, and an essential Android development tool, ADB.  If you don't have ADB installed and working, check out my previous guide to <a href="">Installing and Using ADB in OSX</a> (or check Google for a guide for your OS, though its fairly similar) for help on using ADB to access your Android device.  </p>
+<p>With ADB installed, download the photon-torpedo.tar file to your computer. I downloaded mine to:</p>
+{% highlight bash %}
+/Users/constantinecois/Downloads<br />
+{% endhighlight %}
+<p>but it doesn't really matter where you put it. </p>
+<p>Navigate to the location of photon-torpedo.tar in a Terminal window. Now we need to attach the phone. Make sure the ‘USB Debugging’ is enabled on your phone (Settings->Development), and plug your phone into a USB port on your computer. Motorola has been nice enough to provide a cable for this with the phone charger. </p>
+<p>Just to make sure we have ADB installed and working, type</p>
+{% highlight bash %}
+adb devices<br />
+{% endhighlight %}
+<p>You should see something like:</p>
+{% highlight bash %}
+List of devices attached<br />
+XXXXXXXXXXXXX device<br />
+{% endhighlight %}
+<p>If not, go back and make sure to <a href="http://codehenge.net/blog/2011/08/installing-and-using-adb-in-osx/">install ADB</a> correctly. </p>
+<p>When you are ready to go, we want to get photon-torpedo.tar into /data/tmp on your Photon. To do this, issue the following ADB command in your terminal:</p>
+{% highlight bash %}
+adb push
+<path-to-file>\photon-torpedo.tar /data/tmp
+</path-to-file>{% endhighlight %}
+<p>Now bring up an ADB shell: </p>
+{% highlight bash %}
+adb shell<br />
+{% endhighlight %}
+<p>(or use the Android Terminal Emulator app, but its a bit more tedious to type this way). Currently, when we fire up the shell, we are issuing commands as a standard, non-root user. By the time we are done here, we will get a nice, empowering root prompt. Navigate to the directory you pushed photon-torpedo.tar to:</p>
+{% highlight bash %}
+cd /data/tmp<br />
+{% endhighlight %}
+<p>Unzip the file:</p>
+{% highlight bash %}
+/bin/tar xf /data/tmp/photon-torpedo.tar<br />
+{% endhighlight %}
+<p>Now run the exploit that will allow you to gain root access:</p>
+{% highlight bash %}
+/data/tmp/photon-torpedo.sh<br />
+{% endhighlight %}
+<p>At this point you may or may not see the following error</p>
+{% highlight bash %}
+$ ./photon-torpedo.sh<br />
+./photon-torpedo.sh<br />
+ERROR: ld.so: object 'libpcprofile.so' cannot be loaded as audit interface: unde<br />
+fined symbol: la_version; ignored.</p>
+<p>Fatal server error:<br />
+Server is already active for display 0<br />
+If this server is no longer running, remove /tmp/.X0-lock<br />
+and start again.</p>
+<p>Please consult the The X.Org Foundation support<br />
+at http://wiki.x.org<br />
+for help.</p>
+<p>ddxSigGiveUp: Closing log<br />
+{% endhighlight %}
+<p>This doesn't matter, as long as the next prompt is a root prompt:</p>
+{% highlight bash %}
+root@localhost:/data/tmp#<br />
+{% endhighlight %}
+<p>If you have this root prompt, you are home free. Run one more command to secure permanent root access:</p>
+{% highlight bash %}
+/data/tmp/install-su.sh<br />
+{% endhighlight %}
+<p>That's it!  If you want to verify root access, the Superuser app will now pop up any time an app requests root access, allowing you to allow or deny. Go ahead and launch Android Terminal Emulator (you can use any other root-enabled app you want for this test, if you like) and type:</p>
+{% highlight bash %}
+su -<br />
+{% endhighlight %}
+<p>at the command prompt. This just asks to simulate the root user, a very direct way of testing root access. You should see the Superuser app pop up a window looking something like this:</p>
+<p><center><br />
+<p><figure><img src='{{ site.baseurl }}assets/Terminal-Emulator-SuperUser-Access.png' alt='Terminal Emulator SuperUser Access Image' width='320' height='480'/><figcaption></a><br</figcaption></figure></center><br />
+I'd recommend denying this access, just to make sure you don't issue any unintentional commands as root. But the fact that you were able to request root access successfully demonstrates that you now have root access. </p>
+<p>I'll leave you with a great <a href="http://lifehacker.com/5806135/the-10-best-android-apps-that-make-rooting-your-phone-worth-the-hassle">Lifehacker post</a> listing some of the best apps you can only take advantage of with a rooted phone. Enjoy!</p>

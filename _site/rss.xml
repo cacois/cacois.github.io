@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
+  xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/">
+  <channel>
+    <title>Codehenge</title>
+    <link>blog url</link>
+    <description>Who built it, and why? A blog about software, technology, and more</description>
+    <pubDate>Sun, 05 Jan 2014 22:58:31 -0500</pubDate>
+    <item>
+      <title>What is Node.js?</title>
+      <link>blog url/2014/01/05/what-is-node-js/</link>
+      <description>&lt;p&gt;Node.js - It&amp;#39;s new, its exciting...but what, exactly, is it? Let&amp;#39;s start at the beginning...&lt;/p&gt;
+</description>
+      <pubDate>Sun, 05 Jan 2014 22:58:31 -0500</pubDate>
+      <dc:date>2014-01-05T22:58:31-05:00</dc:date>
+    </item>
+    <item>
+      <title>Discount for Online JavaScript Conference 2013</title>
+      <link>blog url/2013/09/27/discount-for-online-javascript-conference-2013/</link>
+      <description>&lt;p&gt;I’ll be speaking at the Environments for Humans JavaScript Summit on November 21st. The conference is a 3-day, all online conference, which means no travel hassle/cost, and you get to watch great talks from the comfort of home!&lt;/p&gt;
+
+&lt;p&gt;It's shaping up to be a great lineup (check out the &lt;a href=&quot;http://environmentsforhumans.com/2013/javascript-summit/&quot;&gt;list of talks!&lt;/a&gt;), and your registration includes copies of slides and access to recordings of talks after the event.&lt;/p&gt;
+
+&lt;p&gt;The organizers have given me a discount code to share with you: Use 20COIS to get 20% off individual or meeting room tickets. Enjoy!&lt;/p&gt;
+</description>
+      <pubDate>Fri, 27 Sep 2013 09:44:25 -0400</pubDate>
+      <dc:date>2013-09-27T09:44:25-04:00</dc:date>
+    </item>
+    <item>
+      <title>Automate Your Development Environment With Vagrant</title>
+      <link>blog url/2013/02/10/automate-your-development-environment-with-vagrant/</link>
+      <description>&lt;p&gt;Vagrant leverages virtualization and automated system configuration to deliver you customized virtual environments for your development projects. With VirtualBox and its comprehensive API under the hood, Vagrant creates and manages custom virtual environments to your exact specification. But wait, we&amp;#39;ve been able to create virtual machines for years. What&amp;#39;s new here? The problem is configuration of a brand new virtual macine for each project is a massive chore, reinstalling all of your dev tools each time sounds like torture, and developers will still each want VMs of different operating systems...what are we solving? Vagrant does it differently. By giving you the option to leverage powerful, proven automated configuration technologies such as Chef or Puppet (as well as your own custom shell scripts, if you like), Vagrant takes the time and tedium out of configuring a virtual environment&lt;/p&gt;
+</description>
+      <pubDate>Sun, 10 Feb 2013 12:12:19 -0500</pubDate>
+      <dc:date>2013-02-10T12:12:19-05:00</dc:date>
+    </item>
+    <item>
+      <title>Node.js Tutorial: Hello, World!</title>
+      <link>blog url/2012/10/12/node-js-tutorial-hello-world/</link>
+      <description>&lt;p&gt;This is the introductory screencast from my online course, Learn Node.js by Example! In this screencast, I present the basics of Node.js, and develop a small &amp;quot;Hello, World!&amp;quot; app. Enjoy!&lt;/p&gt;
+</description>
+      <pubDate>Fri, 12 Oct 2012 22:48:58 -0400</pubDate>
+      <dc:date>2012-10-12T22:48:58-04:00</dc:date>
+    </item>
+    <item>
+      <title>Screencast: Node.js and MongoDB Using MongoJS</title>
+      <link>blog url/2012/10/08/screencast-node-js-and-mongodb-using-mongojs/</link>
+      <description>&lt;p&gt;Here is a free screencast from my online course, Learn Node.js by Example! In this screencast, I present the basics of using the MongoJS module to add MongoDB to your Node.js applications. Enjoy!&lt;/p&gt;
+</description>
+      <pubDate>Mon, 08 Oct 2012 21:55:22 -0400</pubDate>
+      <dc:date>2012-10-08T21:55:22-04:00</dc:date>
+    </item>
+    <item>
+      <title>Using Socket.io With Express 3.x</title>
+      <link>blog url/2012/08/25/using-socket-io-with-express-3-x/</link>
+      <description>&lt;p&gt;Excited about version 3.x of Express, the Node.js web framework? It has some great new features, and is certainly worth migrating to. Many of my apps make use of Socket.io, one of my favorite Node modules, and in this case, and as of now (Socket.io v9.1) the migration isn&amp;#39;t as smooth as it could be. Until socket.io catches up with the changes to Express, here&amp;#39;s how you can use it with Express 3.x.&lt;/p&gt;
+</description>
+      <pubDate>Sat, 25 Aug 2012 15:39:58 -0400</pubDate>
+      <dc:date>2012-08-25T15:39:58-04:00</dc:date>
+    </item>
+    <item>
+      <title>JavaScript Performance Rundown, 2012</title>
+      <link>blog url/2012/08/04/javascript-performance-rundown-2012/</link>
+      <description>&lt;p&gt;Before giving a conference talk on Node.js earlier this summer, I ran some limited JavaScript benchmark tests, since I couldn&amp;#39;t find any recent (this year) data posted. Inspired by John Resig&amp;#39;s performance analysis a few years ago, I decided to expand on that study by updating browsers and adding more benchmark suites to get a more comprehensive view of performance. I&amp;#39;ll be presenting results for the 5 top desktop browsers...&lt;/p&gt;
+</description>
+      <pubDate>Sat, 04 Aug 2012 21:23:27 -0400</pubDate>
+      <dc:date>2012-08-04T21:23:27-04:00</dc:date>
+    </item>
+    <item>
+      <title>Best Resources to Learn Node.js</title>
+      <link>blog url/2012/08/02/best-resources-to-learn-node-js/</link>
+      <description>&lt;p&gt;If you want to give Node.js a try, here&amp;#39;s a list of my favorite Node tutorials, examples, and guides designed to help developers get up to speed on Node.js.&lt;/p&gt;
+</description>
+      <pubDate>Thu, 02 Aug 2012 22:59:23 -0400</pubDate>
+      <dc:date>2012-08-02T22:59:23-04:00</dc:date>
+    </item>
+    <item>
+      <title>Heading to OSCON 2012</title>
+      <link>blog url/2012/07/16/heading-to-oscon-2012/</link>
+      <description>&lt;p&gt;I'm excited to be heading out to OSCON 2012 in Portland, Oregon this week for a few days of open source fun!  If anyone is at the conference, feel free to look me up. &lt;/p&gt;
+</description>
+      <pubDate>Mon, 16 Jul 2012 15:20:59 -0400</pubDate>
+      <dc:date>2012-07-16T15:20:59-04:00</dc:date>
+    </item>
+    <item>
+      <title>Installing Redis on Mac OSX</title>
+      <link>blog url/2012/07/07/installing-redis-on-mac-osx/</link>
+      <description>&lt;p&gt;In this post, I&amp;#39;ll show you how to install Redis, a popular NoSQL database, on your OSX machine. For those unaware, Redis is described on its project site as: &amp;quot;an open source, advanced key-value store. It is often referred to as a data structure server since keys can contain strings, hashes, lists, sets and sorted sets.&amp;quot;&lt;/p&gt;
+</description>
+      <pubDate>Sat, 07 Jul 2012 23:12:32 -0400</pubDate>
+      <dc:date>2012-07-07T23:12:32-04:00</dc:date>
+    </item>
+    <item>
+      <title>Learn Node.js by Example: An Online Course in Node.js</title>
+      <link>blog url/2012/06/30/learn-node-js-by-example-an-online-course-in-node-js/</link>
+      <description>&lt;p&gt;Getting started with Node.js? Looking to learn more? Wondering why I haven&amp;#39;t been posting as much lately? The answer to all these questions and more:&lt;/p&gt;
+
+&lt;p&gt;I&amp;#39;m proud to introduce &amp;quot;Learn Node.js by Example&amp;quot;, a full-featured course hosted on Udemy.com. I decided to create this course to provide the directed, in-depth learning experience that is difficult to achieve with isolated tutorials and blog posts. &lt;/p&gt;
+</description>
+      <pubDate>Sat, 30 Jun 2012 14:13:02 -0400</pubDate>
+      <dc:date>2012-06-30T14:13:02-04:00</dc:date>
+    </item>
+    <item>
+      <title>Node.js: A Guided Tour</title>
+      <link>blog url/2012/06/09/node-js-a-guided-tour/</link>
+      <description>&lt;p&gt;Description and lecture slides from my Pittsburgh TechFest 2012 talk entitled: &amp;quot;&amp;quot;Node.js: A Guided Tour&amp;quot;.&lt;/p&gt;
+</description>
+      <pubDate>Sat, 09 Jun 2012 20:04:13 -0400</pubDate>
+      <dc:date>2012-06-09T20:04:13-04:00</dc:date>
+    </item>
+    <item>
+      <title>JavaScript Engine Benchmarks, 2012 Edition</title>
+      <link>blog url/2012/06/05/javascript-engine-benchmarks-2012-edition/</link>
+      <description>&lt;p&gt;The graph below shows average results of the SunSpider 0.9.1 JavaScript benchmark test for (what I assume to be) the 5 most popular desktop browsers: Chrome, Firefox, Internet Explorer, Safari, and Opera.&lt;/p&gt;
+</description>
+      <pubDate>Tue, 05 Jun 2012 23:20:23 -0400</pubDate>
+      <dc:date>2012-06-05T23:20:23-04:00</dc:date>
+    </item>
+    <item>
+      <title>Node.js Talk at Pittsburgh TechFest 2012</title>
+      <link>blog url/2012/06/03/node-js-talk-at-pittsburgh-techfest-2012/</link>
+      <description>&lt;p&gt;I&amp;#39;m very excited to announce that I&amp;#39;ll be speaking at Pittsburgh Tech Fest 2012! The event will be held on June 9, at La Roche College. Pittsburgh TechFest is a one-day event for software developers in the western PA area, organized by some awesome guys from local dev user groups.&lt;/p&gt;
+</description>
+      <pubDate>Sun, 03 Jun 2012 16:08:10 -0400</pubDate>
+      <dc:date>2012-06-03T16:08:10-04:00</dc:date>
+    </item>
+    <item>
+      <title>Book Review: Are You Smart Enough to Work for Google?</title>
+      <link>blog url/2012/04/21/book-review-are-you-smart-enough-to-work-for-google/</link>
+      <description>&lt;p&gt;Are you smart enough to work at Google? A question many software engineers probably don’t want an answer to. However, as William Poundstone elaborates in his like-named book, this is exactly the wrong question to ask.&lt;/p&gt;
+</description>
+      <pubDate>Sat, 21 Apr 2012 13:41:52 -0400</pubDate>
+      <dc:date>2012-04-21T13:41:52-04:00</dc:date>
+    </item>
+    <item>
+      <title>JamIt - A Python Framework for Google Code Jam Problems</title>
+      <link>blog url/2012/04/13/jamit-a-python-framework-for-google-code-jam-problems/</link>
+      <description>&lt;p&gt;JamIt is a framework to automatically generate Python skeleton code for a Google Code Jam problem, allowing you to focus on the solution, not the fluff.&lt;/p&gt;
+</description>
+      <pubDate>Fri, 13 Apr 2012 08:43:47 -0400</pubDate>
+      <dc:date>2012-04-13T08:43:47-04:00</dc:date>
+    </item>
+    <item>
+      <title>Getting Started With node.js and socket.io (v0.7+) - Part 2</title>
+      <link>blog url/2011/12/05/getting-started-with-node-js-and-socket-io-v0-7-part-2/</link>
+      <description>&lt;p&gt;In my last post I went through installation and setup of some great new tools: node.js and socket.io. Now that we have node and socket.io installed, its time to play around a bit to understand how to use these new toys. In this post I’ll be writing a simple http server and some client-side html/javascript to go with it. &lt;/p&gt;
+</description>
+      <pubDate>Mon, 05 Dec 2011 00:12:56 -0500</pubDate>
+      <dc:date>2011-12-05T00:12:56-05:00</dc:date>
+    </item>
+    <item>
+      <title>Rooting a Motorola Photon Without a Dock</title>
+      <link>blog url/2011/08/29/rooting-a-motorola-photon-without-a-dock/</link>
+      <description>&lt;p&gt;A clear step-by-step guide to rooting a Motorola Photon using a method that does not require a web dock, or any other accessories. Includes detailed instructions for points of common confusion.&lt;/p&gt;
+</description>
+      <pubDate>Mon, 29 Aug 2011 20:09:33 -0400</pubDate>
+      <dc:date>2011-08-29T20:09:33-04:00</dc:date>
+    </item>
+    <item>
+      <title>Installing and Using ADB in OSX</title>
+      <link>blog url/2011/08/28/installing-and-using-adb-in-osx/</link>
+      <description>&lt;p&gt;Android Debug Bridge (ADB) is a versatile command line tool that lets you communicate with an emulator instance or connected Android-powered device. You can use ADB to transfer files, install apps, access bug reports, or access the shell of your Android device remotely, and that&amp;#39;s just the beginning! In this guide, I&amp;#39;m going to show you how to install and use ADB.&lt;/p&gt;
+</description>
+      <pubDate>Sun, 28 Aug 2011 23:34:40 -0400</pubDate>
+      <dc:date>2011-08-28T23:34:40-04:00</dc:date>
+    </item>
+    <item>
+      <title>Book Review: Ghost in the Wires: My Adventures as the World's Most Wanted Hacker by Kevin Mitnick</title>
+      <link>blog url/2011/08/08/book-review-ghost-in-the-wires-my-adventures-as-the-worlds-most-wanted-hacker-by-kevin-mitnick/</link>
+      <description>&lt;p&gt;Here is my early review of &amp;quot;Ghost in the Wires: My Adventures as the World’s Most Wanted Hacker&amp;quot;, the autobiography of Kevin Mitnick, one of the most notorious hackers in history.&lt;/p&gt;
+</description>
+      <pubDate>Mon, 08 Aug 2011 19:03:47 -0400</pubDate>
+      <dc:date>2011-08-08T19:03:47-04:00</dc:date>
+    </item>
+    <item>
+      <title>Android Development Tutorial: ProgressBar Example</title>
+      <link>blog url/2011/06/24/android-development-tutorial-progressbar-example/</link>
+      <description>&lt;p&gt;The Android ProgressBar is a useful UI component that most developers will quickly find need of.  Displaying progress, even an indeterminate &amp;quot;loading&amp;quot; indicator, provides crucial feedback to a user, eliminating frustration and confusion while your app is churning away in the background. &lt;/p&gt;
+
+&lt;p&gt;Today I&amp;#39;ll demonstrate using an indeterminate ProgressBar within a ListView while loading web content. I&amp;#39;ll be modifying the TweetView project from my previous post. &lt;/p&gt;
+</description>
+      <pubDate>Fri, 24 Jun 2011 20:25:08 -0400</pubDate>
+      <dc:date>2011-06-24T20:25:08-04:00</dc:date>
+    </item>
+    <item>
+      <title>Android Development Tutorial: Asynchronous Lazy Loading and Caching of ListView Images</title>
+      <link>blog url/2011/06/15/android-development-tutorial-asynchronous-lazy-loading-and-caching-of-listview-images/</link>
+      <description>&lt;p&gt;In my last post I created a simple Android Twitter feed reader based on the Twitter Search API, demonstrating an application of custom ListView layouts and integration of internet data sources. &lt;/p&gt;
+
+&lt;p&gt;Today I&amp;#39;ll refactor the Twitter example to add asynchronous lazy loading and caching of images (Twitter profile images, in our case). &lt;/p&gt;
+</description>
+      <pubDate>Wed, 15 Jun 2011 22:19:58 -0400</pubDate>
+      <dc:date>2011-06-15T22:19:58-04:00</dc:date>
+    </item>
+    <item>
+      <title>Website Update</title>
+      <link>blog url/2011/06/05/website-update/</link>
+      <description>&lt;p&gt;Just a quick note - I am in the process of updating the site based on reader feedback and some layout issues i've been having. The new layout should limit scrolling within code blocks, and hopefully provide a better reader experience. &lt;/p&gt;
+
+&lt;p&gt;I'm interested in any feedback readers have on these changes, and thanks for your patience as I worked to fix these issues!&lt;/p&gt;
+</description>
+      <pubDate>Sun, 05 Jun 2011 10:02:41 -0400</pubDate>
+      <dc:date>2011-06-05T10:02:41-04:00</dc:date>
+    </item>
+    <item>
+      <title>Android Development Tutorial - A Simple Twitter Feed Reader</title>
+      <link>blog url/2011/05/30/android-programming-tutorial-a-simple-twitter-feed-reader/</link>
+      <description>&lt;p&gt;Last week I demonstrated designing and implementing customized layouts for Android ListView items, including some simple example code. Today i&amp;#39;ll expand on that code to make something a little closer to an actual app: a Twitter feed reader for Android. I&amp;#39;ll use this exercise to illustrate some new tools and concepts in the process such as working with JSON data and the Android BitmapFactory.&lt;/p&gt;
+</description>
+      <pubDate>Mon, 30 May 2011 16:41:53 -0400</pubDate>
+      <dc:date>2011-05-30T16:41:53-04:00</dc:date>
+    </item>
+    <item>
+      <title>Customizing Android ListView Item Layout</title>
+      <link>blog url/2011/05/22/customizing-android-listview-item-layout/</link>
+      <description>&lt;p&gt;Today I&amp;#39;m going to go step by step through an example of using a ListView, and customizing the visual layout of items within.&lt;/p&gt;
+</description>
+      <pubDate>Sun, 22 May 2011 20:14:22 -0400</pubDate>
+      <dc:date>2011-05-22T20:14:22-04:00</dc:date>
+    </item>
+    <item>
+      <title>Getting Started With node.js and socket.io - Part 2</title>
+      <link>blog url/2011/05/01/getting-started-with-node-js-and-socket-io-part-2/</link>
+      <description>&lt;p&gt;In my last post I went through installation and setup of some great new tools: node.js and socket.io. Now that we have node and socket.io installed, its time to play around a bit to understand how to use these new toys. In this post I&amp;#39;ll be writing a simple http server and some client-side html/javascript to go with it. &lt;/p&gt;
+</description>
+      <pubDate>Sun, 01 May 2011 10:08:22 -0400</pubDate>
+      <dc:date>2011-05-01T10:08:22-04:00</dc:date>
+    </item>
+    <item>
+      <title>Getting Started With node.js and socket.io - Part 1</title>
+      <link>blog url/2011/04/17/getting-started-with-node-js-and-socket-io-part-1/</link>
+      <description>&lt;p&gt;Like many developers out there, I&amp;#39;ve been interested in the potential of real-time, high-throughput client/server communication in web apps using node.js for some time. &lt;/p&gt;
+
+&lt;p&gt;In this post I&amp;#39;ll go through the installation of node.js and socket.io on OSX, then in my next post we&amp;#39;ll make a simple test app from scratch (which helps me to learn far better than just running a pre-made example). &lt;/p&gt;
+</description>
+      <pubDate>Sun, 17 Apr 2011 22:58:03 -0400</pubDate>
+      <dc:date>2011-04-17T22:58:03-04:00</dc:date>
+    </item>
+    <item>
+      <title>Don't Take Your Users To School</title>
+      <link>blog url/2010/11/14/dont-take-your-users-to-school/</link>
+      <description>&lt;p&gt;In 2003, I started my journey towards a PhD. My research focused on medical image analysis, putting my software engineering skills to use in the field of Biomedical Engineering. I began working on the problem of 3D image segmentation...&lt;/p&gt;
+</description>
+      <pubDate>Sun, 14 Nov 2010 19:34:32 -0500</pubDate>
+      <dc:date>2010-11-14T19:34:32-05:00</dc:date>
+    </item>
+    <item>
+      <title>I don't wanna come back down from this cloud...</title>
+      <link>blog url/2010/09/06/i-dont-wanna-come-back-down-from-this-cloud/</link>
+      <description>&lt;p&gt;I’ve never heard the word “cloud” used so much in my life. Indeed, cloud  has been a buzzword for a few years now, describing any number of disparate technologies, architectures, and ideologies. But the reality of this next phase in computing, and what this “cloud” will actually become, is coming into focus.&lt;/p&gt;
+</description>
+      <pubDate>Mon, 06 Sep 2010 08:31:01 -0400</pubDate>
+      <dc:date>2010-09-06T08:31:01-04:00</dc:date>
+    </item>
+    <item>
+      <title>Medical Image Analysis Stack Exchange Proposal</title>
+      <link>blog url/2010/08/10/medical-image-analysis-stack-exchange-proposal/</link>
+      <description>&lt;p&gt;I started a new project I'd like to present. As a programmer I spend a non-trivial amount of  time searching &lt;a href=&quot;http://www.stackoverflow.com/&quot; target=&quot;_blank&quot;&gt;StackOverflow&lt;/a&gt; for information and answers to coding questions, as I'm sure most readers of this blog do as well. It's an interesting  site, merging the Q&amp;amp;A model with that of a wiki/crowdsourcing  community, causing it to attract a lot of expertise and become extremely  popular in the software community. They &lt;a href=&quot;http://stackoverflow.com/about&quot; target=&quot;_blank&quot;&gt;explain it&lt;/a&gt; better than I do.&lt;/p&gt;
+</description>
+      <pubDate>Tue, 10 Aug 2010 22:23:04 -0400</pubDate>
+      <dc:date>2010-08-10T22:23:04-04:00</dc:date>
+    </item>
+    <item>
+      <title>Announcing CHService, a new open source Windows service framework!</title>
+      <link>blog url/2010/08/08/announcing-chservice-a-new-open-source-project/</link>
+      <description>&lt;p&gt;I&amp;#39;m pleased to announce that CHService v1.0 has just been published at Github!&lt;/p&gt;
+
+&lt;p&gt;CHService is a small open source project, born out of my irritation at writing essentially the same Windows Service over and over. &lt;/p&gt;
+</description>
+      <pubDate>Sun, 08 Aug 2010 23:35:15 -0400</pubDate>
+      <dc:date>2010-08-08T23:35:15-04:00</dc:date>
+    </item>
+    <item>
+      <title>Social Networks For Disease Tracking</title>
+      <link>blog url/2010/07/16/social-networks-for-disease-tracking/</link>
+      <description>&lt;p&gt;Automated disease tracking, sometimes known as Biosurveillance, is the process of collecting and analyzing a variety of forms of data to determine disease trends. I briefly worked in this field, which makes me believe I know something about it. For a while now, I&amp;#39;ve been considering the utility of status updates posted on social networks as a potential source of public health information, and it looks like I&amp;#39;m not the only one.&lt;/p&gt;
+</description>
+      <pubDate>Fri, 16 Jul 2010 08:26:36 -0400</pubDate>
+      <dc:date>2010-07-16T08:26:36-04:00</dc:date>
+    </item>
+    <item>
+      <title>An Avalanche of Low-Quality Research?</title>
+      <link>blog url/2010/06/25/an-avalanche-of-low-quality-research/</link>
+      <description>&lt;p&gt;&lt;p&gt;An interesting &lt;a title=&quot;We Must Stop the Avalanche of Low-Quality Research&quot; href=&quot;http://chronicle.com/article/We-Must-Stop-the-Avalanche-of/65890/&quot; target=&quot;_self&quot;&gt;article&lt;/a&gt; was recently published in the &lt;a title=&quot;The Chronicle&quot; href=&quot;http://chronicle.com/&quot; target=&quot;_self&quot;&gt;Chronicle of Higher Education&lt;/a&gt;. The authors note that the number of scientific researchers, and therefore the number of research publications, has increased dramatically in the past few decades, and claim this is indicative of an &amp;quot;avalanche of low-quality research&amp;quot; that must be quelled for the good of science. With all due respect to the authors, I&amp;#39;d like to address this cynical and short-sighted view of scientific research in the modern information-centric world.&lt;/p&gt;
+</description>
+      <pubDate>Fri, 25 Jun 2010 22:39:25 -0400</pubDate>
+      <dc:date>2010-06-25T22:39:25-04:00</dc:date>
+    </item>
+    <dc:date>2014-01-05T22:58:31-05:00</dc:date>
+  </channel>
+</rss>

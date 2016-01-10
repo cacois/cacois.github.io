@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <title>Codehenge - Who built it, and why? A blog about software, technology, and more</title>
+    <meta name="description" content="Codehenge" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+    <!-- Customisation  -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <link rel="stylesheet" href="/pygments.css">
+
+</head>
+<body class="post-template">
+
+    <header class="main-header post-head no-cover">
+    <nav class="main-nav  clearfix">
+        <a class="back-button icon-arrow-left" href="/ ">Home</a>
+        <a class="subscribe-button icon-feed" href="/rss.xml">Subscribe</a>
+    </nav>
+</header>
+
+<main class="content" role="main">
+
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Rooting a Motorola Photon Without a Dock</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2011-08-29">29 Aug 2011</time>
+                
+                    on android
+                
+            </section>
+        </header>
+
+<!--         <header class="post-header">
+            <a id="blog-logo" href="blog url">
+                
+                    <img src="true" alt="Codehenge" />
+                
+            </a>
+        </header> -->
+
+        <!-- <span class="post-meta">
+            <time datetime="2011-08-29">29 Aug 2011</time>
+            
+                on android
+            
+        </span> -->
+
+        <!-- <h1 class="post-title">Rooting a Motorola Photon Without a Dock</h1> -->
+
+        <section class="post-content">
+            <p><figure><img src='/assets/android-root.gif' alt='' width='250' height='250'/><figcaption></a></p></figcaption></figure><p>While the first methods to gain root access to the Android-powered Motorola Photon required an expensive webtop dock, we were soon provided an easy, dock-less <a href="http://forum.xda-developers.com/showthread.php?t=1216131">method</a> for rooting by the incomparable Edgan at xda-developers. For those not yet battle-hardened by Android rooting attempts, I'm providing a clear step-by-step guide to rooting a Motorola Photon, with detailed instructions for points of common confusion.</p>
+<p>Note: I'm using OSX in this guide, but there aren't any significant differences when using other operating systems.</p>
+<p>First, let's get some tools set up on your Photon. </p>
+<p>Install two apps from the Android Marketplace:</p>
+<ul>
+<li><a href="https://market.android.com/details?id=com.noshufou.android.su&feature=search_result">Superuser</a></li>
+<li><a href="https://market.android.com/details?id=jackpal.androidterm&feature=search_result">Android Terminal Emulator</a></li>
+</ul>
+<p>Superuser won't be of much use until you have root access, but you can fire up the Android Terminal Emulator right now if you want to see what it does. It basically gives you a linux prompt on your Android device, allowing you to issue standard linux commands to the underlying operating system. We'll use this to test our root access when we are finished.</p>
+<p>The first thing we need to do is get the file <a href="http://cdn.multidownld.com/files/get/C6BA2NeyY9/photon-torpedo.tar"> photon-torpedo.tar</a> onto your Photon's internal memory. In my opinion, the easiest way of doing this is using my old friend, and an essential Android development tool, ADB.  If you don't have ADB installed and working, check out my previous guide to <a href="">Installing and Using ADB in OSX</a> (or check Google for a guide for your OS, though its fairly similar) for help on using ADB to access your Android device.  </p>
+<p>With ADB installed, download the photon-torpedo.tar file to your computer. I downloaded mine to:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">/Users/constantinecois/Downloads&lt;br /&gt;</code></pre></div>
+<p>but it doesn't really matter where you put it. </p>
+<p>Navigate to the location of photon-torpedo.tar in a Terminal window. Now we need to attach the phone. Make sure the ‘USB Debugging’ is enabled on your phone (Settings->Development), and plug your phone into a USB port on your computer. Motorola has been nice enough to provide a cable for this with the phone charger. </p>
+<p>Just to make sure we have ADB installed and working, type</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">adb devices&lt;br /&gt;</code></pre></div>
+<p>You should see something like:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">List of devices attached&lt;br /&gt;
+XXXXXXXXXXXXX device&lt;br /&gt;</code></pre></div>
+<p>If not, go back and make sure to <a href="http://codehenge.net/blog/2011/08/installing-and-using-adb-in-osx/">install ADB</a> correctly. </p>
+<p>When you are ready to go, we want to get photon-torpedo.tar into /data/tmp on your Photon. To do this, issue the following ADB command in your terminal:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">adb push
+&lt;path-to-file&gt;<span class="se">\p</span>hoton-torpedo.tar /data/tmp
+&lt;/path-to-file&gt;</code></pre></div>
+<p>Now bring up an ADB shell: </p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">adb shell&lt;br /&gt;</code></pre></div>
+<p>(or use the Android Terminal Emulator app, but its a bit more tedious to type this way). Currently, when we fire up the shell, we are issuing commands as a standard, non-root user. By the time we are done here, we will get a nice, empowering root prompt. Navigate to the directory you pushed photon-torpedo.tar to:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">cd</span> /data/tmp&lt;br /&gt;</code></pre></div>
+<p>Unzip the file:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">/bin/tar xf /data/tmp/photon-torpedo.tar&lt;br /&gt;</code></pre></div>
+<p>Now run the exploit that will allow you to gain root access:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">/data/tmp/photon-torpedo.sh&lt;br /&gt;</code></pre></div>
+<p>At this point you may or may not see the following error</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>./photon-torpedo.sh&lt;br /&gt;
+./photon-torpedo.sh&lt;br /&gt;
+ERROR: ld.so: object <span class="s1">&#39;libpcprofile.so&#39;</span> cannot be loaded as audit interface: unde&lt;br /&gt;
+fined symbol: la_version<span class="p">;</span> ignored.&lt;/p&gt;
+&lt;p&gt;Fatal server error:&lt;br /&gt;
+Server is already active <span class="k">for</span> display 0&lt;br /&gt;
+If this server is no longer running, remove /tmp/.X0-lock&lt;br /&gt;
+and start again.&lt;/p&gt;
+&lt;p&gt;Please consult the The X.Org Foundation support&lt;br /&gt;
+at http://wiki.x.org&lt;br /&gt;
+<span class="k">for</span> help.&lt;/p&gt;
+&lt;p&gt;ddxSigGiveUp: Closing log&lt;br /&gt;</code></pre></div>
+<p>This doesn't matter, as long as the next prompt is a root prompt:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">root@localhost:/data/tmp#&lt;br /&gt;</code></pre></div>
+<p>If you have this root prompt, you are home free. Run one more command to secure permanent root access:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">/data/tmp/install-su.sh&lt;br /&gt;</code></pre></div>
+<p>That's it!  If you want to verify root access, the Superuser app will now pop up any time an app requests root access, allowing you to allow or deny. Go ahead and launch Android Terminal Emulator (you can use any other root-enabled app you want for this test, if you like) and type:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">su -&lt;br /&gt;</code></pre></div>
+<p>at the command prompt. This just asks to simulate the root user, a very direct way of testing root access. You should see the Superuser app pop up a window looking something like this:</p>
+<p><center><br />
+<p><figure><img src='/assets/Terminal-Emulator-SuperUser-Access.png' alt='Terminal Emulator SuperUser Access Image' width='320' height='480'/><figcaption></a><br</figcaption></figure></center><br />
+I'd recommend denying this access, just to make sure you don't issue any unintentional commands as root. But the fact that you were able to request root access successfully demonstrates that you now have root access. </p>
+<p>I'll leave you with a great <a href="http://lifehacker.com/5806135/the-10-best-android-apps-that-make-rooting-your-phone-worth-the-hassle">Lifehacker post</a> listing some of the best apps you can only take advantage of with a rooted phone. Enjoy!</p>
+
+        </section>
+
+        
+
+        <footer class="post-footer">
+            <!-- If we want to display author's name and bio -->
+            
+                <figure class="author-image">
+                    <a class="img" href="/ " style="background-image: url(/assets/images/profile2.jpg)">
+                    <span class="hidden">Constantine Aaron Cois's Picture</span></a>
+                </figure>
+                <section class="author">
+                    <!-- Author Name -->
+                    <h4> Constantine Aaron Cois </h4>
+                    <!-- Author Bio -->
+                    <p>
+                         I code, I teach, I write. Want to know more <a href='/about.html'> about me? </a> 
+                    </p>
+                </section>
+            
+
+            <!-- Share links section -->
+            <section class="share">
+    <h4>Share this post</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?text=Rooting a Motorola Photon Without a Dock&amp;url=http://www.codehenge.net/2011/08/29/rooting-a-motorola-photon-without-a-dock/"
+        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://www.codehenge.net/2011/08/29/rooting-a-motorola-photon-without-a-dock/"
+        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://www.codehenge.net/2011/08/29/rooting-a-motorola-photon-without-a-dock/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+
+            <!-- Disqus comments -->
+            
+
+        </footer>
+
+    </article>
+
+</main>
+
+    <footer class="site-footer clearfix">
+      <section class="copyright">
+        <a href="/">Codehenge</a> &copy;
+               &bull; All rights reserved.
+      </section>
+      <section class="poweredby">Made with Jekyll using
+        <a href="http://github.com/rosario/kasper">Kasper theme</a>
+      </section>
+    </footer>
+
+    <script type="text/javascript" src="/assets/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="/assets/js/index.js"></script>
+
+    <!-- Google Analytics Tracking code -->
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-XXXXXXXX-X']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>
+</body>
+</html>

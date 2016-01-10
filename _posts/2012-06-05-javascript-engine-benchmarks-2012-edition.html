@@ -1,0 +1,56 @@
+---
+layout: post
+title: JavaScript Engine Benchmarks, 2012 Edition
+date: 2012-06-05 23:20:23.000000000 -04:00
+type: post
+published: true
+status: publish
+categories:
+- Open Source
+- Programming
+tags:
+- node.js
+meta:
+  _networkpub_meta_published: new
+  _aioseop_keywords: node.js, node, javascript, sunspider, benchmark
+  _edit_last: '1'
+  _networkpub_meta_publish: '1'
+  _networkpub_meta_content: '0'
+  _aioseop_title: JavaScript Engine Benchmarks, 2012 Edition
+  _aioseop_description: 'The graph below shows average results of the <a href="http://www.webkit.org/perf/sunspider/sunspider.html">SunSpider
+    0.9.1</a> JavaScript benchmark test for (what I assume to be) the 5 most popular
+    desktop browsers: Chrome, Firefox, Internet Explorer, Safari, and Opera.'
+  meta_description: 'The graph below shows average results of the <a href="http://www.webkit.org/perf/sunspider/sunspider.html">SunSpider
+    0.9.1</a> JavaScript benchmark test for (what I assume to be) the 5 most popular
+    desktop browsers: Chrome, Firefox, Internet Explorer, Safari, and Opera.'
+  meta_keywords: node.js, node, javascript, sunspider, benchmark
+  dsq_thread_id: '715345937'
+  suf_meta_description: 'The graph below shows average results of the <a href="http://www.webkit.org/perf/sunspider/sunspider.html">SunSpider
+    0.9.1</a> JavaScript benchmark test for (what I assume to be) the 5 most popular
+    desktop browsers: Chrome, Firefox, Internet Explorer, Safari, and Opera.'
+  suf_meta_keywords: node.js, node, javascript, sunspider, benchmark
+  sponge: '1'
+author:
+  login: cacois
+  email: cacois@gmail.com
+  display_name: cacois
+  first_name: Constantine
+  last_name: Cois
+excerpt: 'The graph below shows average results of the SunSpider 0.9.1 JavaScript
+  benchmark test for (what I assume to be) the 5 most popular desktop browsers: Chrome,
+  Firefox, Internet Explorer, Safari, and Opera.'
+---
+<p>In preparation for my talk on <a href="http://www.nodejs.org">Node.js</a> at <a href="http://pghtechfest.com/">Pittsburgh TechFest 2012</a>, I went searching for some up-to-date JavaScript engine benchmarks.</p>
+<p>After being unable to find any recent (this year) data, I decided to perform the tests myself. The graph below shows average results of the <a href="http://www.webkit.org/perf/sunspider/sunspider.html">SunSpider 0.9.1</a> JavaScript benchmark test for (what I assume to be) the 5 most popular desktop browsers: Chrome, Firefox, Internet Explorer, Safari, and Opera.</p>
+<p><figure><img src='{{ site.baseurl }}assets/sunspider-javascript-benchmark-black.png' alt='><img class=' width='960' height='720'/><figcaption></a></figcaption></figure><p>Values reported are the mean of 10 consecutive runs with each browser. Tests were performed on a Intel Core i7 Macbook Pro with 8GB RAM, running Windows 7 Ultimate SP1.</p>
+<p>Not-so-long story short, Google’s V8 engine (Chrome) still leads the pack, though not by much. Microsoft’s Chakra (IE9) performs admirably, with SpiderMonkey (Firefox 9), Carakan (Opera), and SquirrelFish (Safari) trailing in that order.</p>
+<div class="note" style="background-color:#f2f2e6;margin-top:50px;margin-bottom:50px">
+<div style="padding:5px;font-family: 'Times New Roman', Times, serif;text-align:center;margin: 0px auto;font-style:oblique;font-size:30px;">Learn Node.js by Example</div>
+<p style="padding:10px;font-family: 'Times New Roman', Times, serif;text-align:center;margin: 0px auto;font-size:18px;"> Take my online course featuring screencasts and sample projects!</p>
+<div class="signup_button">
+<a href="http://www.udemy.com/learn-nodejs-by-example/"><br />
+</a><br />
+<h3 style="color:#ffffff">Sign up now</h3>
+<p>30-day money back guarantee!</p>
+</div>
+</div>

@@ -1,0 +1,56 @@
+---
+layout: post
+title: JavaScript Performance Rundown, 2012
+date: 2012-08-04 21:23:27.000000000 -04:00
+type: post
+published: true
+status: publish
+categories:
+- Node.js
+- Programming
+- Research
+tags: []
+meta:
+  _edit_last: '1'
+  sponge: '1'
+  _aioseop_description: 'A study of JavaScript engine performance results on multiple
+    benchmark suites for the top 5 desktop browsers: Chrome, Firefox, IE9, Opera,
+    and Safari.'
+  _aioseop_title: JavaScript Performance Rundown, 2012
+  suf_meta_description: 'A study of JavaScript engine performance results on multiple
+    benchmark suites for the top 5 desktop browsers: Chrome, Firefox, IE9, Opera,
+    and Safari.'
+  dsq_thread_id: '792837367'
+  _aioseop_keywords: javascript, benchmark, node, node.js, chrome, v8, firefox
+  suf_meta_keywords: javascript, benchmark, node, node.js, chrome, v8, firefox
+  suf_thumbnail: http://webtunings.com/photos/logos/javascript_logo.jpg
+  suf_featured_image: http://webtunings.com/photos/logos/javascript_logo.jpg
+author:
+  login: cacois
+  email: cacois@gmail.com
+  display_name: cacois
+  first_name: Constantine
+  last_name: Cois
+excerpt: Before giving a conference talk on Node.js earlier this summer, I ran some
+  limited JavaScript benchmark tests, since I couldn't find any recent (this year)
+  data posted. Inspired by John Resig's performance analysis a few years ago, I decided
+  to expand on that study by updating browsers and adding more benchmark suites to
+  get a more comprehensive view of performance. I'll be presenting results for the
+  5 top desktop browsers...
+---
+<p>Before giving a conference talk on Node.js earlier this summer, I ran some limited JavaScript benchmark tests, since I couldn't find any recent (this year) data posted. Inspired by <a href="http://ejohn.org/blog/javascript-performance-rundown/">John Resig's performance analysis</a> a few years ago, I decided to expand on that study by updating browsers and adding more benchmark suites to get a more comprehensive view of performance. I'll be presenting results for the 5 top desktop browsers:</p>
+<ul>
+<li>Google Chrome v20.0.1132.47 (V8 Engine) </li>
+<li>Microsoft Internet Explorer v9.0.8112.16421 (Chakra Engine) </li>
+<li>Firefox v14.0.1 (SpiderMonkey Engine) </li>
+<li>Opera v12.00 (Carakan Engine) </li>
+<li>Safari v5.1.7 (SquirrelFish Engine)</li>
+</ul>
+<p>Browser/engine versions are up to date at time of writing. Values reported are the mean of 10 consecutive runs with each browser. Tests were performed on a Intel Core i7 Macbook Pro with 8GB RAM, running Windows 7 Ultimate SP1.</p>
+<p>First, let's check out the <a href="http://www.webkit.org/perf/sunspider/sunspider.html">SunSpider 0.9.1</a> JavaScript benchmark test:</p>
+<p><figure><img src='{{ site.baseurl }}assets/sunspider-2012-08-04.png' alt='' width='960' height='720'/><figcaption></a></p></figcaption></figure><p>Interestingly, the latest version of Microsoft's Chakra engine slightly edged out Chrome and its V8 engine in my test. Fear not, the result is not statistically significant. However, I do have to give credit to MS. For the capabilities tested by SunSpider, Chakra currently performs as well as V8. The remaining browsers went Opera, Firefox, Safari, from best to worst. These differences, though they appear small on the graph, were statistically significant (p < 0.01).</p>
+<p>Moving on, I went to the <a href="http://v8.googlecode.com/svn/trunk/benchmarks/run.html">V8 JavaScript Benchmark Suite</a>. This is the suite used by Google internally to optimize and test the V8 engine, so expect V8 to perform well on this. Results:</p>
+<p><figure><img src='{{ site.baseurl }}assets/v8-benchmark-2012-08-04.png' alt='' width='960' height='720'/><figcaption></a></p></figcaption></figure><p>Chrome/V8 takes a solid lead here, with Firefox/SpiderMonkey a distant second, and everyone else trailing.</p>
+<p>Finally, <a href="http://krakenbenchmark.mozilla.org/">Mozilla's Kraken benchmark suite</a>:</p>
+<p><figure><img src='{{ site.baseurl }}assets/kraken-benchmark-2012-08-04.png' alt='' width='960' height='720'/><figcaption></a></p></figcaption></figure><p>Again, Chrome/V8 and Firefox/SpiderMonkey in a league of their own, with Chrome slightly ahead. Results here were statistically significant (p < 0.01) as well.</p>
+<p>So, for now, the V8 engine remains the champ (nothing to worry about here, Node.js users), though its nice to see an unexpected second wind from contenders like IE9 in some benchmarks. If I get time, I'll try to add a few more benchmark suites to round this out, though I did find some reported results for <a href="http://www.flickr.com/photos/26983785@N02/7158672499/">Chrome vs Firefox on Peacekeeper</a> that maintain V8's superiority.</p>
