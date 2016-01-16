@@ -8,6 +8,19 @@
 	display:inline;
 }
 
+.subscribe-button {
+    border-radius: 30px;
+    padding: 0px 15px;
+}
+
+.author-image {
+    top: 10px;
+}
+
+.back-button {
+    border-radius: 30px;
+}
+
 // Import partials from `sass_dir` (defaults to `_sass`)
 @import
 	"syntax"
