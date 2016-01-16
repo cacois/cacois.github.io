@@ -8,7 +8,7 @@ logo: true
 paginate: 10
 baseurl: /
 domain_name: 'http://www.codehenge.net'
-permalink:     '/:year/:month/:day/:title/'
+permalink:     '/:year/:month/:title/'
 google_analytics: 'UA-XXXXXXXX-X'
 
 # Details for the RSS feed generator
