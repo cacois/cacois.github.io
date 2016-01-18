@@ -1,6 +1,6 @@
 name: Codehenge
 description: Who built it, and why? A blog about software, technology, and more
-meta_description: "Codehenge"
+meta_description: "Codehenge Software Blog"
 
 markdown: redcarpet
 highlighter: pygments
