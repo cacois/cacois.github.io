@@ -9,7 +9,7 @@ paginate: 10
 baseurl: /
 domain_name: 'http://www.codehenge.net'
 permalink:     '/:year/:month/:title/'
-google_analytics: 'UA-XXXXXXXX-X'
+google_analytics: 'UA-11550677-2'
 
 # Details for the RSS feed generator
 url:            'blog url'
