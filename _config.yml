@@ -3,7 +3,7 @@ description: Who built it, and why? A blog about software, technology, and more
 meta_description: "Codehenge Software Blog"
 
 markdown: redcarpet
-highlighter: pygments
+highlighter: rouge
 logo: true
 paginate: 10
 baseurl: /
