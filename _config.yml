@@ -10,16 +10,19 @@ baseurl: /
 domain_name: 'http://www.codehenge.net'
 permalink:     '/:year/:month/:title/'
 google_analytics: 'UA-11550677-2'
+include: [".htaccess"]
 
 # Details for the RSS feed generator
 url:            'http://www.codehenge.net'
 author:         'Constantine Aaron Cois'
 
 # gems
-gems:
+plugins:
   - jekyll-redirect-from
   - jekyll-feed
+  - jekyll-paginate
 
 whitelist:
   - jekyll-redirect-from
   - jekyll-feed
+  - jekyll-paginate
