@@ -1,0 +1,15 @@
+So today, let's talk about the word I used earlier: _attrify_. Can't move your legs for a long while? They won't work well anymore, and you will need to work hard to rebuild their capabilities. Its a concept most of us think is irrelevant to our lives, barring catastrophic injury. I disagree. I find this phenomenon true of everything from exercise to learning, from coding to people skills; and I think understanding it is incredibly important to achieving your life goals. 
+
+A specific example: in the tech industry, many developers lament the move to management as a forcing factor is degrading their development skills. Work in management for a few years, and they no longer feel confident as an independent contributor - can't switch back to a develoipment job if they wanted to. They feel stuck. I'd say there's truth to this. Again, if you don't use a muscle that muscle will attrify. And it takes hard work to regain it - hard work the manager probably doesn't have time or motivation for. So if continuing to be able to code is a life goal of yours, you should consider carefully what career moves you make. However, I'd argue that many people, especially those who are happy in pure management roles, don't consider being able to code a strong life goal. If thye did, they would probably orient their work or life to keep exercising that muscle. This is a very tangible example that will probably appeal to most readers of this blog. 
+
+However, I find the intangible examples of skill attrify far more concerning. For example, I've seen many people in my life retire from their profession without a plan or desire to exercise their intellectual capabilities. Year by year, without fail, these people degrade. They lose their wit, their ability to analyze, their desire to think deeply. I contrast this with others I've known who "retired" into other vocations, be they indpendent ventures, volunteering, civic roles, etc. They remained sharp, vital, and highly capable much longer. Of course, my observations are anecdotal, covering only those I've known throughout my life; but the signal I've seen is far too strong to ignore, and the conclusion I draw follows logically: exercise the skills you want to retain so they don't attrify. The first step in this is recognizing what all attributes are able to attrify. I propose that _all of them_ can. Say you are funny, and do well in social situations. Try not talking to people for a few months, I bet you will feel less socially adept. Are you a good learner, able to master new skills and knowledge quickly and with focus? If you stop learning for a few years, it will be harder the next time you try.
+
+Given this, I can draw a short list of high-level skills that are important to me to keep from attrify:
+
+* The ability to learn
+* Analytical capabilities
+* Basic fitness
+
+This list and the idea of attrify shapes my personal plans as I age. I fully plan to "retire" someday, but really I just want to leave full time tech work and try other fulfilling types of work, such as teaching and entrepreneurship. This will keep my analytical, planning, and problem-solving skills sharp.
+
+
